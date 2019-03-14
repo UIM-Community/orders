@@ -1,0 +1,35 @@
+{
+  "name": "orders",
+  "version": "1.0.0",
+  "description": "N/A",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UIM-Community/orders.git"
+  },
+  "keywords": [],
+  "author": "GENTILHOMME Thomas <gentilhomme.thomas@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UIM-Community/orders/issues"
+  },
+  "homepage": "https://github.com/UIM-Community/orders#readme",
+  "devDependencies": {
+    "@slimio/eslint-config": "^2.0.3",
+    "@slimio/is": "^1.5.0",
+    "eslint": "^5.15.1",
+    "got": "^9.6.0",
+    "japa": "^2.0.7"
+  },
+  "dependencies": {
+    "@mysql/xdevapi": "^8.0.15",
+    "@polka/send-type": "^0.5.2",
+    "dotenv": "^7.0.0",
+    "make-promises-safe": "^4.0.0",
+    "polka": "^0.5.2"
+  }
+}
