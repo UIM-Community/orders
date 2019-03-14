@@ -126,8 +126,7 @@ httpServer.patch("/order/:id", async(req, res) => {
     return send(res, 200);
 });
 
-// TODO: Improve response (with k-v map).
-httpServer.get("/order_attr/:id", async(req, res) => {
+httpServer.get("/order/attr/:id", async(req, res) => {
     const id = req.params.id;
 
     const sess = await getSession();
@@ -137,7 +136,23 @@ httpServer.get("/order_attr/:id", async(req, res) => {
         .where("order_id = :id").bind("id", id)
     );
 
-    return send(res, 200, rows);
+    const result = {
+        bu_id: rows[0][1],
+        attributes: {}
+    };
+    for (const row of rows) {
+        result.attributes[row[2]] = {
+            id: row[0],
+            value: row[3]
+        };
+    }
+
+    return send(res, 200, result);
+});
+
+httpServer.patch("/order/attr/:id", (req, res) => {
+
+    return send(res, 200, "ok");
 });
 
 module.exports = httpServer;
