@@ -28,7 +28,9 @@
   "dependencies": {
     "@mysql/xdevapi": "^8.0.15",
     "@polka/send-type": "^0.5.2",
+    "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
+    "indicative": "^5.0.8",
     "make-promises-safe": "^4.0.0",
     "polka": "^0.5.2"
   }

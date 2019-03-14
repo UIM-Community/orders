@@ -3,8 +3,24 @@ require("dotenv").config();
 
 // Require Internal Dependencies
 const httpServer = require("./src/httpServer");
+const getSession = require("./src/session");
+const { qWrap } = require("./src/utils");
 
 // Globals
 const PORT = process.env.port || 1337;
 
-httpServer.listen(PORT, () => console.log(`Http server now listening on port: ${PORT}`));
+async function main() {
+    httpServer.listen(PORT, () => console.log(`Http server now listening on port: ${PORT}`));
+
+    const sess = await getSession();
+    const tOrders = sess.getTable("cmdb_order");
+    const [row = null] = await qWrap(
+        tOrders.select(["number"]).orderBy("number desc").limit(1)
+    );
+
+    httpServer.use((req, res, next) => {
+        req.lastId = row;
+        next();
+    });
+}
+main().catch(console.error);
