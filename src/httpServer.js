@@ -104,11 +104,29 @@ httpServer.post("/order", async(req, res) => {
     return send(res, 200, { orderId });
 });
 
-// TODO: Decom an Order
-httpServer.patch("/order", (req, res) => {
-    send(res, 200, "ok");
+httpServer.patch("/order/:id", async(req, res) => {
+    const orderId = req.params.id;
+    const status = req.body.status;
+    if (typeof status !== "boolean") {
+        return send(res, 500, "body.status must be a boolean");
+    }
+
+    const sess = await getSession();
+    const ret = await sess.getTable("cmdb_order")
+        .update()
+        .set("status", Number(status))
+        .where("id = :id")
+        .bind("id", orderId)
+        .execute();
+
+    if (ret.getAffectedRowsCount() !== 1) {
+        return send(res, 500, `Unable to update status to ${status} for order id ${orderId}`);
+    }
+
+    return send(res, 200);
 });
 
+// TODO: Improve response (with k-v map).
 httpServer.get("/order_attr/:id", async(req, res) => {
     const id = req.params.id;
 
