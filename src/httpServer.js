@@ -11,7 +11,12 @@ const getSession = require("./session");
 const { qWrap, capitalizeFirstLetter } = require("./utils");
 
 // Create HTTP Server
-const httpServer = polka();
+const httpServer = polka({
+    onError(err, req, res) {
+        // Transform Unhandled Error(s) here
+        send(res, 500, err.message);
+    }
+});
 httpServer.use(bodyParser.json());
 
 httpServer.get("/", (req, res) => {
@@ -150,6 +155,7 @@ httpServer.get("/order/attr/:id", async(req, res) => {
     return send(res, 200, result);
 });
 
+// TODO: Implement rfc6902 (JSON Patch)
 httpServer.patch("/order/attr/:id", async(req, res) => {
     try {
         await validate(req.body, {
