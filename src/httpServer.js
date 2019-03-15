@@ -94,11 +94,11 @@ httpServer.post("/order", async(req, res) => {
 
     const orderId = ret.getAutoIncrementValue();
     let cursor = sess.getTable("cmdb_order_attr")
-        .insert(["order_id", "bu_id", "key", "value"])
-        .values([orderId, row[0], "Application", application]);
+        .insert(["order_id", "key", "value"])
+        .values([orderId, "Application", application]);
 
     for (const [key, value] of attributes) {
-        cursor = cursor.values([orderId, row[0], capitalizeFirstLetter(key), value]);
+        cursor = cursor.values([orderId, capitalizeFirstLetter(key), value]);
     }
     const queryResult = await cursor.execute();
 
