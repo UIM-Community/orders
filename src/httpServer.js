@@ -68,7 +68,7 @@ httpServer.post("/order", async(req, res) => {
     catch (err) {
         console.error(err);
 
-        return send(res, 500, err.message);
+        return send(res, 400, err.message);
     }
     const { application, attr = Object.create(null) } = req.body;
     const attributes = Object.entries(attr);
@@ -101,14 +101,14 @@ httpServer.post("/order", async(req, res) => {
         return send(res, 500, "Unable to insert all orders attributes!");
     }
 
-    return send(res, 200, { orderId });
+    return send(res, 201, { orderId });
 });
 
 httpServer.patch("/order/:id", async(req, res) => {
     const orderId = req.params.id;
     const status = req.body.status;
     if (typeof status !== "boolean") {
-        return send(res, 500, "body.status must be a boolean");
+        return send(res, 400, "body.status must be a boolean");
     }
 
     const sess = await getSession();
@@ -160,7 +160,7 @@ httpServer.patch("/order/attr/:id", async(req, res) => {
     catch (err) {
         console.error(err);
 
-        return send(res, 500, err.message);
+        return send(res, 400, err.message);
     }
     const orderId = req.params.id;
     const { key, value } = req.body;
