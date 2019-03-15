@@ -50,7 +50,7 @@ httpServer.get("/bu/:trigram?", async(req, res) => {
     return send(res, 200, ret);
 });
 
-httpServer.get("/orders", async(req, res) => {
+httpServer.get("/order", async(req, res) => {
     const sess = await getSession();
     const tOrders = sess.getTable("cmdb_order");
     const rows = await qWrap(tOrders.select(["id", "number", "status", "last_update"]));
@@ -131,7 +131,7 @@ httpServer.patch("/order/:id", async(req, res) => {
     return send(res, 200);
 });
 
-httpServer.get("/order/attr/:id", async(req, res) => {
+httpServer.get("/order/:id/attr", async(req, res) => {
     const id = req.params.id;
 
     const sess = await getSession();
@@ -156,7 +156,7 @@ httpServer.get("/order/attr/:id", async(req, res) => {
 });
 
 // TODO: Implement rfc6902 (JSON Patch)
-httpServer.patch("/order/attr/:id", async(req, res) => {
+httpServer.patch("/order/:id/attr", async(req, res) => {
     try {
         await validate(req.body, {
             key: "required|string",
@@ -190,5 +190,8 @@ httpServer.patch("/order/attr/:id", async(req, res) => {
 });
 
 // TODO: handle actions (CRUD).
+httpServer.get("/order/:id/action", (req, res) => {
+
+});
 
 module.exports = httpServer;
