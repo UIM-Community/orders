@@ -155,6 +155,11 @@ httpServer.get("/order/:id/attr", async(req, res) => {
     return send(res, 200, result);
 });
 
+// TODO: Implement post for attr
+httpServer.post("/order/:id/attr", (req, res) => {
+
+});
+
 // TODO: Implement rfc6902 (JSON Patch)
 httpServer.patch("/order/:id/attr", async(req, res) => {
     try {
@@ -189,9 +194,26 @@ httpServer.patch("/order/:id/attr", async(req, res) => {
     return send(res, 200);
 });
 
-// TODO: handle actions (CRUD).
-httpServer.get("/order/:id/action", (req, res) => {
+httpServer.get("/order/:id/action", async(req, res) => {
+    const orderId = req.params.id;
 
+    const sess = await getSession();
+    const rows = await qWrap(sess.getTable("cmdb_order_action")
+        .select(["id", "bu_id", "condition", "json"])
+        .where("order_id = :id")
+        .bind("id", orderId)
+    );
+
+    const filtered = rows.map((row) => {
+        return {
+            id: row[0],
+            bu_id: row[1],
+            condition: row[2],
+            actions: row[3]
+        };
+    });
+
+    send(res, 200, filtered);
 });
 
 module.exports = httpServer;
