@@ -122,4 +122,28 @@ test.group("REST Tests", (group) => {
         assert.equal(order.number, lastID + 1);
         assert.equal(order.status, 1);
     });
+
+    test("/order - Create order (Unable to found business unit)", async(assert) => {
+        const uri = new URL("order", DEFAULT_URL).href;
+
+        const body = {
+            application: "WAL",
+            attr: {
+                title: "Test Application",
+                description: "Hello world!",
+                team: "",
+                servicenow: "",
+                mail: "gentilhomme.thomas@gmail.com",
+                information: ""
+            }
+        };
+
+        try {
+            await post(uri, { body });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 500);
+            assert.equal(err.data, "Unable to found Business Unit with trigram 'WAL'");
+        }
+    });
 });
