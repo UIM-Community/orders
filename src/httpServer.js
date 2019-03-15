@@ -211,4 +211,21 @@ httpServer.get("/order/:id/action", async(req, res) => {
     send(res, 200, filtered);
 });
 
+httpServer.put("/order/:id/action", async(req, res) => {
+    try {
+        await validate(req.body, {
+            bu_id: "required|number",
+            condition: "required|number",
+            json: "required|string"
+        });
+    }
+    catch (err) {
+        console.error(err);
+
+        return send(res, 400, err.message);
+    }
+
+    const orderId = req.params.id;
+});
+
 module.exports = httpServer;

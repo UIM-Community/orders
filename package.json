@@ -23,6 +23,7 @@
     "@slimio/is": "^1.5.0",
     "eslint": "^5.15.1",
     "got": "^9.6.0",
+    "httpie": "^1.1.0",
     "japa": "^2.0.7"
   },
   "dependencies": {
