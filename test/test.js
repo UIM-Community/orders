@@ -2,18 +2,33 @@
 require("dotenv").config();
 const test = require("japa");
 const is = require("@slimio/is");
-const { get } = require("httpie");
+const { get, post } = require("httpie");
 
 // Require Internal Dependencies
 const httpServer = require("../src/httpServer");
+const getSession = require("../src/session");
 
 // Globals
 const PORT = process.env.port || 1337;
 const DEFAULT_URL = new URL(`http://localhost:${PORT}/`);
+const lastID = 100500;
 
 test.group("REST Tests", (group) => {
     group.before(() => {
         httpServer.listen(PORT);
+        httpServer.use((req, res, next) => {
+            req.lastId = [lastID];
+            next();
+        });
+    });
+
+    group.after(async() => {
+        const sess = await getSession();
+        await sess.getTable("cmdb_order")
+            .delete()
+            .where("number >= :number")
+            .bind("number", lastID)
+            .execute();
     });
 
     test("/", async(assert) => {
@@ -79,5 +94,32 @@ test.group("REST Tests", (group) => {
             assert.equal(err.statusCode, 500);
             assert.equal(err.data, "Unable to found order with id 58525500");
         }
+    });
+
+    test("/order - Create a new order", async(assert) => {
+        const uri = new URL("order", DEFAULT_URL).href;
+
+        const body = {
+            application: "ACG",
+            attr: {
+                title: "Test Application",
+                description: "Hello world!",
+                team: "",
+                servicenow: "",
+                mail: "gentilhomme.thomas@gmail.com",
+                information: ""
+            }
+        };
+        const { data, statusCode } = await post(uri, { body });
+
+        assert.equal(statusCode, 201);
+        assert.equal(is.plainObject(data), true);
+        assert.equal(is.number(data.orderId), true);
+        assert.deepEqual(Object.keys(data), ["orderId"]);
+
+        const { data: order } = await get(new URL(`order/${data.orderId}`, DEFAULT_URL).href);
+        assert.equal(Number(order.id), Number(data.orderId));
+        assert.equal(order.number, lastID + 1);
+        assert.equal(order.status, 1);
     });
 });
