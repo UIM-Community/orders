@@ -75,13 +75,13 @@ httpServer.get("/order/:id?", async(req, res) => {
 httpServer.post("/order", async(req, res) => {
     try {
         await validate(req.body, {
-            application: "required|min:3|max:3",
-            "attr.title": "required|string|max:255",
-            "attr.description": "required|string|max:255",
-            "attr.team": "required|string|max:255",
-            "attr.servicenow": "required|string|max:255",
-            "attr.mail": "required|email",
-            "attr.information": "required|string|max:255"
+            application: "required|string",
+            "attr.title": "string|max:255",
+            "attr.description": "string|max:255",
+            "attr.team": "string|max:255",
+            "attr.servicenow": "string|max:255",
+            "attr.mail": "email",
+            "attr.information": "string|max:255"
         });
     }
     catch (err) {
