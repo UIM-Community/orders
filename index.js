@@ -17,6 +17,9 @@ async function main() {
     const [row = null] = await qWrap(
         tOrders.select(["number"]).orderBy("number desc").limit(1)
     );
+    if (row === null) {
+        throw new Error("Unable to found last number for orders!");
+    }
 
     httpServer.use((req, res, next) => {
         req.lastId = row;
