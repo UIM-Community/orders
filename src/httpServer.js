@@ -150,9 +150,39 @@ httpServer.get("/order/attr/:id", async(req, res) => {
     return send(res, 200, result);
 });
 
-httpServer.patch("/order/attr/:id", (req, res) => {
+httpServer.patch("/order/attr/:id", async(req, res) => {
+    try {
+        await validate(req.body, {
+            key: "required|string",
+            value: "required|string|max:255"
+        });
+    }
+    catch (err) {
+        console.error(err);
 
-    return send(res, 200, "ok");
+        return send(res, 500, err.message);
+    }
+    const orderId = req.params.id;
+    const { key, value } = req.body;
+
+    // TODO: Depending on key value, run validation
+    // Mail => email, Application => valid trigram
+
+    const sess = await getSession();
+    const ret = await sess.getTable("cmdb_order_attr")
+        .update()
+        .set("value", value)
+        .where("order_id = :id AND key = :key")
+        .bind("id", orderId)
+        .bind("key", key)
+        .execute();
+    if (ret.getAffectedRowsCount() !== 1) {
+        return send(res, 500, `Unable to update attributes for order id ${orderId}`);
+    }
+
+    return send(res, 200);
 });
+
+// TODO: handle actions (CRUD).
 
 module.exports = httpServer;
