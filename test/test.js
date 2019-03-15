@@ -2,7 +2,7 @@
 require("dotenv").config();
 const test = require("japa");
 const is = require("@slimio/is");
-const { get, post } = require("httpie");
+const { get, post, patch } = require("httpie");
 
 // Require Internal Dependencies
 const httpServer = require("../src/httpServer");
@@ -14,6 +14,7 @@ const DEFAULT_URL = new URL(`http://localhost:${PORT}/`);
 const lastID = 100500;
 
 test.group("REST Tests", (group) => {
+    let orderId;
     group.before(() => {
         httpServer.listen(PORT);
         httpServer.use((req, res, next) => {
@@ -116,6 +117,7 @@ test.group("REST Tests", (group) => {
         assert.equal(is.plainObject(data), true);
         assert.equal(is.number(data.orderId), true);
         assert.deepEqual(Object.keys(data), ["orderId"]);
+        orderId = data.orderId;
 
         const { data: order } = await get(new URL(`order/${data.orderId}`, DEFAULT_URL).href);
         assert.equal(Number(order.id), Number(data.orderId));
@@ -145,5 +147,15 @@ test.group("REST Tests", (group) => {
             assert.equal(err.statusCode, 500);
             assert.equal(err.data, "Unable to found Business Unit with trigram 'WAL'");
         }
+    });
+
+    test("/order - update status", async(assert) => {
+        const uri = new URL(`order/${orderId}`, DEFAULT_URL).href;
+        const body = { status: false };
+        const { statusCode } = await patch(uri, { body });
+        assert.equal(statusCode, 200);
+
+        const { data: order } = await get(uri);
+        assert.equal(order.status, 0);
     });
 });
