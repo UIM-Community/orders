@@ -50,12 +50,26 @@ httpServer.get("/bu/:trigram?", async(req, res) => {
     return send(res, 200, ret);
 });
 
-httpServer.get("/order", async(req, res) => {
+httpServer.get("/order/:id?", async(req, res) => {
+    const id = req.params.id;
+
     const sess = await getSession();
     const tOrders = sess.getTable("cmdb_order");
-    const rows = await qWrap(tOrders.select(["id", "number", "status", "last_update"]));
 
-    return send(res, 200, rows);
+    if (typeof id === "string") {
+        const [row = null] = await qWrap(
+            tOrders.select(["id", "number", "status", "last_update"]).where("id = :id").bind("id", id)
+        );
+        if (row === null) {
+            return send(res, 500, `Unable to found order with id ${id}`);
+        }
+
+        return send(res, 200, {
+            id: row[0], number: row[1], status: row[2], lastUpdate: row[3]
+        });
+    }
+
+    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update"])));
 });
 
 httpServer.post("/order", async(req, res) => {
@@ -226,6 +240,8 @@ httpServer.put("/order/:id/action", async(req, res) => {
     }
 
     const orderId = req.params.id;
+
+    return send(res, 200);
 });
 
 module.exports = httpServer;
