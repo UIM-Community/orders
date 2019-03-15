@@ -62,12 +62,12 @@ httpServer.post("/order", async(req, res) => {
     try {
         await validate(req.body, {
             application: "required|min:3|max:3",
-            "attr.title": "string|max:255",
-            "attr.description": "string|max:255",
-            "attr.team": "string|max:255",
-            "attr.servicenow": "string|max:255",
-            "attr.mail": "email",
-            "attr.information": "string|max:255"
+            "attr.title": "required|string|max:255",
+            "attr.description": "required|string|max:255",
+            "attr.team": "required|string|max:255",
+            "attr.servicenow": "required|string|max:255",
+            "attr.mail": "required|email",
+            "attr.information": "required|string|max:255"
         });
     }
     catch (err) {
@@ -153,11 +153,6 @@ httpServer.get("/order/:id/attr", async(req, res) => {
     }
 
     return send(res, 200, result);
-});
-
-// TODO: Implement post for attr
-httpServer.post("/order/:id/attr", (req, res) => {
-
 });
 
 // TODO: Implement rfc6902 (JSON Patch)
