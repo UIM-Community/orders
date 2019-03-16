@@ -12,12 +12,7 @@ const { qWrap, capitalizeFirstLetter } = require("./utils");
 const rule = require("./rule.json");
 
 // Create HTTP Server
-const httpServer = polka({
-    onError(err, req, res) {
-        // Transform Unhandled Error(s) here
-        send(res, 500, err.message);
-    }
-});
+const httpServer = polka();
 httpServer.use(bodyParser.json());
 
 httpServer.get("/", (req, res) => {
@@ -78,9 +73,7 @@ httpServer.post("/order", async(req, res) => {
         await validate(req.body, rule.order);
     }
     catch (err) {
-        console.error(err);
-
-        return send(res, 400, err.message);
+        return send(res, 400, err[0].message);
     }
     const { application, attr } = req.body;
     const attributes = Object.entries(attr);
