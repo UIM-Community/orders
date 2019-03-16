@@ -89,7 +89,7 @@ httpServer.post("/order", async(req, res) => {
 
         return send(res, 400, err.message);
     }
-    const { application, attr = Object.create(null) } = req.body;
+    const { application, attr } = req.body;
     const attributes = Object.entries(attr);
 
     const sess = await getSession();
