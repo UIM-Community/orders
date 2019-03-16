@@ -16,9 +16,10 @@ const lastID = 100500;
 test.group("REST Tests", (group) => {
     let orderId;
     group.before(() => {
+        const lastIDRef = [lastID];
         httpServer.listen(PORT);
         httpServer.use((req, res, next) => {
-            req.lastId = [lastID];
+            req.lastId = lastIDRef;
             next();
         });
     });
@@ -60,6 +61,7 @@ test.group("REST Tests", (group) => {
     });
 
     test("/bu (Unable to found business Unit)", async(assert) => {
+        assert.plan(2);
         try {
             await get(new URL("bu/WAL", DEFAULT_URL).href);
         }
@@ -88,6 +90,7 @@ test.group("REST Tests", (group) => {
     });
 
     test("/order (Unable to found order with id)", async(assert) => {
+        assert.plan(2);
         try {
             await get(new URL("order/58525500", DEFAULT_URL).href);
         }
@@ -123,6 +126,26 @@ test.group("REST Tests", (group) => {
         assert.equal(Number(order.id), Number(data.orderId));
         assert.equal(order.number, lastID + 1);
         assert.equal(order.status, 1);
+    });
+
+    test("/order - Create a new order (Invalid payload)", async(assert) => {
+        assert.plan(2);
+        const uri = new URL("order", DEFAULT_URL).href;
+
+        const body = {
+            application: "ACG",
+            attr: {
+                mail: "bloo"
+            }
+        };
+
+        try {
+            await post(uri, { body });
+        }
+        catch (err) {
+            assert.equal(err.statusCode, 400);
+            assert.equal(err.data, "email validation failed on attr.mail");
+        }
     });
 
     test("/order - Create order (Unable to found business unit)", async(assert) => {
