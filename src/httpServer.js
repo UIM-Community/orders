@@ -9,6 +9,7 @@ const { validate } = require("indicative");
 // Require Internal Dependencies
 const getSession = require("./session");
 const { qWrap, capitalizeFirstLetter } = require("./utils");
+const rule = require("./rule.json");
 
 // Create HTTP Server
 const httpServer = polka({
@@ -74,15 +75,7 @@ httpServer.get("/order/:id?", async(req, res) => {
 
 httpServer.post("/order", async(req, res) => {
     try {
-        await validate(req.body, {
-            application: "required|string",
-            "attr.title": "string|max:255",
-            "attr.description": "string|max:255",
-            "attr.team": "string|max:255",
-            "attr.servicenow": "string|max:255",
-            "attr.mail": "email",
-            "attr.information": "string|max:255"
-        });
+        await validate(req.body, rule.order);
     }
     catch (err) {
         console.error(err);

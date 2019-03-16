@@ -1,0 +1,12 @@
+{
+    "order": {
+        "application": "required|string",
+        "attr": "required|object",
+        "attr.title": "string|max:255",
+        "attr.description": "string|max:255",
+        "attr.team": "string|max:255",
+        "attr.servicenow": "string|max:255",
+        "attr.mail": "email",
+        "attr.information": "string|max:255"
+    }
+}
