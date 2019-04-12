@@ -1,9 +1,15 @@
 require("make-promises-safe");
 
+// Require Node.js Dependencies
+const { readFile } = require("fs").promises;
+const { join } = require("path");
+
 // Require Third-party Dependencies
 const polka = require("polka");
 const send = require("@polka/send-type");
 const bodyParser = require("body-parser");
+const sirv = require("sirv");
+const compress = require("compression")();
 const { validate } = require("indicative");
 
 // Require Internal Dependencies
@@ -11,9 +17,21 @@ const getSession = require("./session");
 const { qWrap, capitalizeFirstLetter } = require("./utils");
 const rule = require("./rule.json");
 
+// CONSTANTS
+const VIEW_DIR = join(__dirname, "..", "views");
+
 // Create HTTP Server
+const assets = sirv("public", {
+    dev: true
+});
 const httpServer = polka();
+httpServer.use(compress, assets);
 httpServer.use(bodyParser.json());
+
+httpServer.get("/view", async(req, res) => {
+    const view = await readFile(join(VIEW_DIR, "index.html"));
+    send(res, 200, view, { "Content-Type": "text/html" });
+});
 
 httpServer.get("/", (req, res) => {
     send(res, 200, { uptime: process.uptime() });
