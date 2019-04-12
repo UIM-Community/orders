@@ -33,8 +33,13 @@ httpServer.get("/view", async(req, res) => {
     send(res, 200, view, { "Content-Type": "text/html" });
 });
 
-httpServer.get("/view/businessapp", async(req, res) => {
-    const view = await readFile(join(VIEW_DIR, "business_application.html"));
+httpServer.get("/view/:name", async(req, res) => {
+    const { name } = req.params;
+    if (!/^[a-zA-Z_]+$/.test(name)) {
+        return send(res, 500, "Invalid template name");
+    }
+
+    const view = await readFile(join(VIEW_DIR, "modules", `${name}.html`));
     send(res, 200, view, { "Content-Type": "text/html" });
 });
 

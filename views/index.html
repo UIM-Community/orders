@@ -24,15 +24,19 @@
         const menu_orders = document.getElementById("menu_orders");
         let activeMenu = null;
 
-        menu_ba.addEventListener("click", async() => {
+        function setupMenu(menu) {
             if (activeMenu !== null) {
                 aside.innerHTML = "";
                 activeMenu.classList.remove("active");
             }
-            activeMenu = menu_ba;
+            activeMenu = menu;
             activeMenu.classList.add("active");
+        }
 
-            const html = await fetch("/view/businessapp").then((res) => res.text());
+        menu_ba.addEventListener("click", async() => {
+            setupMenu(menu_ba);
+
+            const html = await fetch("/view/business_application").then((res) => res.text());
             aside.innerHTML = html;
 
             const businessApplications = await fetch("/bu").then((res) => res.json());
@@ -58,12 +62,10 @@
         });
 
         menu_orders.addEventListener("click", async() => {
-            if (activeMenu !== null) {
-                aside.innerHTML = "";
-                activeMenu.classList.remove("active");
-            }
-            activeMenu = menu_orders;
-            activeMenu.classList.add("active");
+            setupMenu(menu_orders);
+
+            const html = await fetch("/view/orders").then((res) => res.text());
+            aside.innerHTML = html;
         });
 
         menu_ba.click();
