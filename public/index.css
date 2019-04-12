@@ -27,12 +27,34 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+form {
+    margin-left: auto;
+    margin-right: 4px;
+}
+
+input {
+    width: 250px;
+    padding: 5px;
+    border: 2px solid #CCC;
+    border-radius: 2px;
+}
+
+input[type="submit"] {
+    width: 100px;
+    background: #1A237E;
+    color: #FFF;
+    border-color: #283593;
+}
+
 nav {
     width: 300px;
     margin-right: 10px;
+    text-align: center;
+    flex-shrink: 0;
 }
     nav > img {
-        max-width: 100%;
+        max-width: 80%;
+        margin: 20px 0;
     }
     nav > ul {
         margin-top: 10px;
@@ -46,6 +68,10 @@ nav {
             background: rgba(240, 240, 240, 0.25);
             border-radius: 5px;
             transition: 0.2s background linear;
+        }
+        nav > ul li.active {
+            background: #1A237E;
+            color: #FFF;
         }
         nav > ul li + li {
             margin-top: 5px;
@@ -66,10 +92,10 @@ aside {
 }
     aside h1 {
         color: #1A237E;
+        margin-bottom: 10px;
     }
     aside table {
         margin-top: 10px;
-        border-collapse: separate;
         border-spacing: 4px;
     }
         aside table > thead {
@@ -85,6 +111,7 @@ aside {
         }
             aside table > tbody tr td {
                 padding: 3px;
+                color: #424242;
             }
             aside table > tbody tr td.center {
                 text-align: center;

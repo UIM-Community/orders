@@ -12,26 +12,62 @@
         <img src="img/axa-logo.png" alt="AXA-IM" />
         <ul>
             <li id="menu_ba">Business Applications</li>
-            <li id="orders">Orders</li>
+            <li id="menu_orders">Orders</li>
         </ul>
     </nav>
-    <aside id="content">
-        <h1>Business Applications</h1>
+    <aside id="content"></aside>
+    <script src="js/utils.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const aside = document.getElementById("content");
+        const menu_ba = document.getElementById("menu_ba");
+        const menu_orders = document.getElementById("menu_orders");
+        let activeMenu = null;
 
-    </aside>
-    <template id="order_template">
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Last update</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </template>
-    <script src="master.js"></script>
+        menu_ba.addEventListener("click", async() => {
+            if (activeMenu !== null) {
+                aside.innerHTML = "";
+                activeMenu.classList.remove("active");
+            }
+            activeMenu = menu_ba;
+            activeMenu.classList.add("active");
+
+            const html = await fetch("/view/businessapp").then((res) => res.text());
+            aside.innerHTML = html;
+
+            const businessApplications = await fetch("/bu").then((res) => res.json());
+
+            // Search
+            document.getElementById("search").addEventListener("submit", (event) => {
+                event.preventDefault();
+                filterTable("search_value");
+            });
+
+            const _t = new DynamicTable("order_template");
+            for (const [name, trigram, status, lastUpdate] of businessApplications) {
+                const date = formatDate(new Date(lastUpdate));
+                _t.addRow([
+                    trigram,
+                    { value: name },
+                    status ? "✔️" : "❌",
+                    date,
+                    { value: "🔎", center: true }
+                ])
+            }
+            aside.appendChild(_t.close());
+        });
+
+        menu_orders.addEventListener("click", async() => {
+            if (activeMenu !== null) {
+                aside.innerHTML = "";
+                activeMenu.classList.remove("active");
+            }
+            activeMenu = menu_orders;
+            activeMenu.classList.add("active");
+        });
+
+        menu_ba.click();
+    });
+    </script>
 </body>
 </html>

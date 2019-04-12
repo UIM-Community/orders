@@ -33,6 +33,11 @@ httpServer.get("/view", async(req, res) => {
     send(res, 200, view, { "Content-Type": "text/html" });
 });
 
+httpServer.get("/view/businessapp", async(req, res) => {
+    const view = await readFile(join(VIEW_DIR, "business_application.html"));
+    send(res, 200, view, { "Content-Type": "text/html" });
+});
+
 httpServer.get("/", (req, res) => {
     send(res, 200, { uptime: process.uptime() });
 });
@@ -58,7 +63,7 @@ httpServer.get("/bu/:trigram?", async(req, res) => {
     const ret = { name: row[0], trigram: row[1], status: row[2], attributes: [] };
     await sess.getTable("cmdb_bu_attr")
         .select(["key", "value", "last_update"])
-        .where("id = :id").bind("id", row[3])
+        .where("bu_id = :id").bind("id", row[3])
         .execute((value) => ret.attributes.push(value));
 
     return send(res, 200, ret);
