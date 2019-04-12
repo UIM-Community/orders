@@ -82,7 +82,7 @@ httpServer.get("/order/:id?", async(req, res) => {
 
     if (typeof id === "string") {
         const [row = null] = await qWrap(
-            tOrders.select(["id", "number", "status", "last_update"]).where("id = :id").bind("id", id)
+            tOrders.select(["id", "number", "status", "last_update"]).where("number = :id").bind("id", id)
         );
         if (row === null) {
             return send(res, 500, `Unable to found order with id ${id}`);
@@ -162,25 +162,30 @@ httpServer.patch("/order/:id", async(req, res) => {
 httpServer.get("/order/:id/attr", async(req, res) => {
     const id = req.params.id;
 
-    const sess = await getSession();
-    const tOrdersAttr = sess.getTable("cmdb_order_attr");
-    const rows = await qWrap(tOrdersAttr
-        .select(["id", "bu_id", "key", "value"])
-        .where("order_id = :id").bind("id", id)
-    );
+    try {
+        const sess = await getSession();
+        const tOrdersAttr = sess.getTable("cmdb_order_attr");
+        const rows = await qWrap(tOrdersAttr
+            .select(["id", "key", "value"])
+            .where("order_id = :id").bind("id", id)
+        );
 
-    const result = {
-        bu_id: rows[0][1],
-        attributes: {}
-    };
-    for (const row of rows) {
-        result.attributes[row[2]] = {
-            id: row[0],
-            value: row[3]
+        const result = {
+            bu_id: rows[0][1],
+            attributes: {}
         };
-    }
+        for (const row of rows) {
+            result.attributes[row[2]] = {
+                id: row[0],
+                value: row[3]
+            };
+        }
 
-    return send(res, 200, result);
+        return send(res, 200, result);
+    }
+    catch (err) {
+        return send(res, 500, err.message);
+    }
 });
 
 // TODO: Implement rfc6902 (JSON Patch)

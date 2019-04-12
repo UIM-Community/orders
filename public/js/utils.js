@@ -1,5 +1,5 @@
 function filterTable(inputName) {
-    const searchName = document.getElementById(inputName).value;
+    const searchName = document.getElementById(inputName).value.toLowerCase();
     const table = document.querySelector("table");
     const tr = table.getElementsByTagName("tr");
 
@@ -8,7 +8,7 @@ function filterTable(inputName) {
         if (!td) {
             continue;
         }
-        const txtValue = td.textContent || td.innerText;
+        const txtValue = (td.textContent || td.innerText).toLowerCase();
         tr[id].style.display = txtValue.indexOf(searchName) > -1 ? "" : "none";
     }
 }
