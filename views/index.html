@@ -34,25 +34,25 @@
         }
 
         menu_ba.addEventListener("click", async() => {
+            // Fetch view
             setupMenu(menu_ba);
-
             const html = await fetch("/view/business_application").then((res) => res.text());
             aside.innerHTML = html;
 
-            const businessApplications = await fetch("/bu").then((res) => res.json());
-
-            // Search
+            // Add search handlers & events
             document.getElementById("search").addEventListener("submit", (event) => {
                 event.preventDefault();
                 filterTable("search_value");
             });
 
             document.getElementById("search_active").addEventListener("change", (event) => {
-                const checked = event.target.checked;
-                filterTableByActive(checked);
+                filterTableByActive(event.target.checked);
             });
 
-            const _t = new DynamicTable("order_template");
+            // Fetch and hydrate business applications
+            const businessApplications = await fetch("/bu").then((res) => res.json());
+
+            const _t = new DynamicTable("businessapp_template");
             for (const [name, trigram, status, lastUpdate] of businessApplications) {
                 const date = formatDate(new Date(lastUpdate));
                 _t.addRow([
@@ -67,10 +67,35 @@
         });
 
         menu_orders.addEventListener("click", async() => {
+            // Fetch view
             setupMenu(menu_orders);
-
             const html = await fetch("/view/orders").then((res) => res.text());
             aside.innerHTML = html;
+
+            // Add search handlers & events
+            document.getElementById("search").addEventListener("submit", (event) => {
+                event.preventDefault();
+                filterTable("search_value", 0);
+            });
+
+            document.getElementById("search_active").addEventListener("change", (event) => {
+                filterTableByActive(event.target.checked, 1);
+            });
+
+            // Fetch and hydrate orders
+            const orders = await fetch("/order").then((res) => res.json());
+
+            const _t = new DynamicTable("order_template");
+            for (const [id, number, status, lastUpdate] of orders) {
+                const date = formatDate(new Date(lastUpdate));
+                _t.addRow([
+                    number,
+                    status ? "✔️" : "❌",
+                    date,
+                    { value: "🔎", center: true }
+                ], status)
+            }
+            aside.appendChild(_t.close());
         });
 
         menu_ba.click();

@@ -148,7 +148,7 @@ httpServer.patch("/order/:id", async(req, res) => {
     const ret = await sess.getTable("cmdb_order")
         .update()
         .set("status", Number(status))
-        .where("id = :id")
+        .where("number = :id")
         .bind("id", orderId)
         .execute();
 

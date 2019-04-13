@@ -1,10 +1,10 @@
-function filterTable(inputName) {
+function filterTable(inputName, tdRow = 1) {
     const searchName = document.getElementById(inputName).value.toLowerCase();
     const table = document.querySelector("table");
     const tr = table.getElementsByTagName("tr");
 
     for (let id = 0; id < tr.length; id++) {
-        td = tr[id].getElementsByTagName("td")[1];
+        td = tr[id].getElementsByTagName("td")[tdRow];
         if (!td) {
             continue;
         }
@@ -13,12 +13,12 @@ function filterTable(inputName) {
     }
 }
 
-function filterTableByActive(active) {
+function filterTableByActive(active, tdRow = 2) {
     const table = document.querySelector("table");
     const tr = table.getElementsByTagName("tr");
 
     for (let id = 0; id < tr.length; id++) {
-        td = tr[id].getElementsByTagName("td")[2];
+        td = tr[id].getElementsByTagName("td")[tdRow];
         if (!td) {
             continue;
         }

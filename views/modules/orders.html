@@ -1,1 +1,24 @@
 <h1>Orders</h1>
+
+<form id="search">
+    <p>
+        <input type="checkbox" id="search_active" checked>
+        <label for="search_active">Active</label>
+    </p>
+    <input type="text" placeholder="Orders number" id="search_value">
+    <input type="submit" value="Search">
+</form>
+
+<template id="order_template">
+    <table>
+        <thead>
+            <tr>
+                <th>Order number</th>
+                <th style="width: 60px">Status</th>
+                <th style="width: 170px">Last update</th>
+                <th style="width: 60px"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</template>

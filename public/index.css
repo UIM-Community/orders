@@ -119,6 +119,7 @@ input[type="submit"] {
     background: #1A237E;
     color: #FFF;
     border-color: #283593;
+    margin-left: 10px;
 }
 
 nav {
