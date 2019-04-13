@@ -170,14 +170,11 @@ httpServer.get("/order/:id/attr", async(req, res) => {
             .where("order_id = :id").bind("id", id)
         );
 
-        const result = {
-            bu_id: rows[0][1],
-            attributes: {}
-        };
+        const result = {};
         for (const row of rows) {
-            result.attributes[row[2]] = {
+            result[row[1]] = {
                 id: row[0],
-                value: row[3]
+                value: row[2]
             };
         }
 

@@ -13,6 +13,26 @@ function filterTable(inputName) {
     }
 }
 
+function filterTableByActive(active) {
+    const table = document.querySelector("table");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let id = 0; id < tr.length; id++) {
+        td = tr[id].getElementsByTagName("td")[2];
+        if (!td) {
+            continue;
+        }
+
+        const txtValue = td.textContent || td.innerText;
+        if (active) {
+            tr[id].style.display = txtValue === "✔️" ? "" : "none";
+        }
+        else {
+            tr[id].style.display = "";
+        }
+    }
+}
+
 function formatDate(date) {
     const day = `0${date.getDate()}`.slice(-2);
     const month = `0${date.getMonth() + 1}`.slice(-2);
@@ -41,9 +61,10 @@ class DynamicTable {
      * @method addRow
      * @memberof DynamicTable#
      * @param {String[]} elements elements
+     * @param {Boolean} [active=true] active row
      * @returns {void}
      */
-    addRow(elements) {
+    addRow(elements, active = true) {
         if (!Array.isArray(elements)) {
             throw new Error("elements must be an Array");
         }
@@ -63,6 +84,10 @@ class DynamicTable {
             }
 
             tr.appendChild(tdElement);
+        }
+
+        if (!active) {
+            tr.style.display = "none";
         }
         this.rowFragments.appendChild(tr);
     }

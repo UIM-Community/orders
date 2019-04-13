@@ -47,6 +47,11 @@
                 filterTable("search_value");
             });
 
+            document.getElementById("search_active").addEventListener("change", (event) => {
+                const checked = event.target.checked;
+                filterTableByActive(checked);
+            });
+
             const _t = new DynamicTable("order_template");
             for (const [name, trigram, status, lastUpdate] of businessApplications) {
                 const date = formatDate(new Date(lastUpdate));
@@ -56,7 +61,7 @@
                     status ? "✔️" : "❌",
                     date,
                     { value: "🔎", center: true }
-                ])
+                ], status)
             }
             aside.appendChild(_t.close());
         });
