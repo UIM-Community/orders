@@ -24,7 +24,7 @@ a {
 body {
     display: flex;
     padding: 5px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Roboto;
 }
 
 form {
@@ -40,6 +40,22 @@ form > p {
     position: relative;
     color: #212121;
 }
+
+button {
+    height: 30px;
+    border: none;
+    outline: none;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    background: #512DA8;
+    padding: 0 10px;
+    color: #FFF;
+    transition: 0.2s linear;
+    font-family: Roboto;
+}
+    button:hover {
+        cursor: pointer;
+        background: #689F38;
+    }
 
 @-webkit-keyframes fadeIn {
     from { opacity: 0; }
@@ -125,9 +141,9 @@ input[type="text"] {
 
 input[type="submit"] {
     width: 100px;
-    background: #558B2F;
+    background: #673AB7;
     color: #FFF;
-    border: 2px solid #33691E;
+    border: 2px solid #311B92;
     border-radius: 4px;
     margin-left: 10px;
     font-weight: bold;
@@ -182,9 +198,20 @@ section#whiteBG {
                 background: #B71C1C;
             }
 
-        section#whiteBG > section.modal > p {
+
+        section#whiteBG > section.modal hr {
+            width: 100%;
+            border: 1px solid #CFD8DC;
+            border-radius: 10px;
+        }
+        section#whiteBG > section.modal p {
             color: #283593;
             margin: 0 4px 10px 4px;
+        }
+        section#whiteBG > section.modal button {
+            width: 150px;
+            margin-left: auto;
+            margin-right: 4px;
         }
 
 nav {
@@ -250,7 +277,6 @@ table {
             height: 27px;
             border-radius: 2px;
             font-size: 16px;
-            font-family: Calibri;
         }
 
     table > tbody#attr tr td:nth-child(3) {

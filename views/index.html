@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Orders manager</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -56,18 +57,26 @@
             const html = await fetch("/view/business_application").then((res) => res.text());
             aside.innerHTML = html;
 
+            const searchBox = document.getElementById("search_active");
+
             // Add search handlers & events
             document.getElementById("search").addEventListener("submit", (event) => {
                 event.preventDefault();
+                const searchName = document.getElementById("search_value").value.toLowerCase();
                 filterTable("search_value");
+
+                if (searchName.trim() === "") {
+                    searchBox.dispatchEvent(new Event("change"));
+                }
             });
 
-            document.getElementById("search_active").addEventListener("change", (event) => {
+            searchBox.addEventListener("change", (event) => {
                 filterTableByActive(event.target.checked);
             });
 
             // Fetch and hydrate business applications
-            const businessApplications = await fetch("/bu").then((res) => res.json());
+            let businessApplications = await fetch("/bu").then((res) => res.json());
+            businessApplications = businessApplications.sort((a, b) => b[3] - a[3]);
 
             const _t = new DynamicTable("businessapp_template");
             for (const [name, trigram, status, lastUpdate] of businessApplications) {
@@ -116,23 +125,23 @@
             });
 
             // Fetch and hydrate orders
-            const orders = await fetch("/order").then((res) => res.json());
+            let orders = await fetch("/order").then((res) => res.json());
+            orders = orders.sort((a, b) => b[3] - a[3]);
 
             const _t = new DynamicTable("order_template");
             for (const [id, number, status, lastUpdate] of orders) {
                 const date = formatDate(new Date(lastUpdate));
                 async function click() {
                     const result = await fetch(`/order/${id}/attr`).then((res) => res.json());
-                    console.log(result);
 
                     openModal("order_modal", (clone) => {
-                        clone.querySelector(".title").textContent = `id: ${id}, number: ${number}`;
+                        clone.querySelector(".title").textContent = `Order n'${number} (id: ${id})`;
 
                         const attrBody = clone.getElementById("attr");
-                        for (const [title, row] of Object.entries(result)) {
+                        for (const [title, value] of Object.entries(result)) {
                             const tr = document.createElement("tr");
                             tr.appendChild(createTd(title));
-                            tr.appendChild(createTd(row.value));
+                            tr.appendChild(createTd(value));
                             attrBody.appendChild(tr);
                         }
                     });
@@ -142,6 +151,7 @@
                     number,
                     status ? "✔️" : "❌",
                     date,
+                    "🔎",
                     { value: "⚙️", center: true, click }
                 ], status)
             }

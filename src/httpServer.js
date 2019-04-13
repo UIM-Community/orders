@@ -19,6 +19,12 @@ const rule = require("./rule.json");
 
 // CONSTANTS
 const VIEW_DIR = join(__dirname, "..", "views");
+const DEFAULT_ORDER_ATTR = {
+    Description: "",
+    Servicenow: "",
+    Team: "",
+    Information: ""
+};
 
 // Create HTTP Server
 const assets = sirv("public", {
@@ -166,19 +172,17 @@ httpServer.get("/order/:id/attr", async(req, res) => {
         const sess = await getSession();
         const tOrdersAttr = sess.getTable("cmdb_order_attr");
         const rows = await qWrap(tOrdersAttr
-            .select(["id", "key", "value"])
-            .where("id = :id").bind("id", id)
+            .select(["key", "value"])
+            .where("order_id = :id").bind("id", id)
         );
 
-        const result = {};
-        for (const row of rows) {
-            result[row[1]] = {
-                id: row[0],
-                value: row[2]
-            };
-        }
+        const result = rows.reduce((prev, curr) => {
+            prev[curr[0]] = curr[1];
 
-        return send(res, 200, result);
+            return prev;
+        }, {});
+
+        return send(res, 200, Object.assign(DEFAULT_ORDER_ATTR, result));
     }
     catch (err) {
         return send(res, 500, err.message);

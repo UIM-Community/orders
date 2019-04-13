@@ -1,7 +1,7 @@
 <h1>Orders</h1>
 
 <section>
-    <button>Create new order</button>
+    <button>➕ Create new order</button>
 </section>
 
 <form id="search">
@@ -20,6 +20,7 @@
                 <th>Order number</th>
                 <th style="width: 60px">Status</th>
                 <th style="width: 170px">Last update</th>
+                <th style="width: 100px">Actions</th>
                 <th style="width: 60px"></th>
             </tr>
         </thead>
@@ -29,6 +30,7 @@
 
 <template id="order_modal">
     <p class="title"></p>
+    <hr>
     <p>
         <input type="checkbox" id="order_active" checked>
         <label for="order_active">Active</label>
@@ -42,5 +44,6 @@
         </thead>
         <tbody id="attr"></tbody>
     </table>
+    <hr>
     <button>Save</button>
 </template>
