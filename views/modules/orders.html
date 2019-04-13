@@ -10,7 +10,7 @@
         <label for="search_active">Active</label>
     </p>
     <input type="text" placeholder="Orders number" id="search_value">
-    <input type="submit" value="Search">
+    <input type="submit" value="Search 🔎">
 </form>
 
 <template id="order_template">
@@ -25,4 +25,22 @@
         </thead>
         <tbody></tbody>
     </table>
+</template>
+
+<template id="order_modal">
+    <p class="title"></p>
+    <p>
+        <input type="checkbox" id="order_active" checked>
+        <label for="order_active">Active</label>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody id="attr"></tbody>
+    </table>
+    <button>Save</button>
 </template>

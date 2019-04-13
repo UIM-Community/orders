@@ -121,11 +121,28 @@
             const _t = new DynamicTable("order_template");
             for (const [id, number, status, lastUpdate] of orders) {
                 const date = formatDate(new Date(lastUpdate));
+                async function click() {
+                    const result = await fetch(`/order/${id}/attr`).then((res) => res.json());
+                    console.log(result);
+
+                    openModal("order_modal", (clone) => {
+                        clone.querySelector(".title").textContent = `id: ${id}, number: ${number}`;
+
+                        const attrBody = clone.getElementById("attr");
+                        for (const [title, row] of Object.entries(result)) {
+                            const tr = document.createElement("tr");
+                            tr.appendChild(createTd(title));
+                            tr.appendChild(createTd(row.value));
+                            attrBody.appendChild(tr);
+                        }
+                    });
+                }
+
                 _t.addRow([
                     number,
                     status ? "✔️" : "❌",
                     date,
-                    { value: "⚙️", center: true }
+                    { value: "⚙️", center: true, click }
                 ], status)
             }
             aside.appendChild(_t.close());

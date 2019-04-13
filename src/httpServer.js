@@ -167,7 +167,7 @@ httpServer.get("/order/:id/attr", async(req, res) => {
         const tOrdersAttr = sess.getTable("cmdb_order_attr");
         const rows = await qWrap(tOrdersAttr
             .select(["id", "key", "value"])
-            .where("order_id = :id").bind("id", id)
+            .where("id = :id").bind("id", id)
         );
 
         const result = {};
