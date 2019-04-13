@@ -41,6 +41,15 @@ form > p {
     color: #212121;
 }
 
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+      to { opacity: 1; }
+}
+
 /* Base for label styling */
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
@@ -132,13 +141,14 @@ section#whiteBG {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: fadeIn 0.5s;
 }
     section#whiteBG.hidden {
         display: none;
     }
 
     section#whiteBG > section.modal {
-        background: #CFD8DC;
+        background: #ECEFF1;
         border: 2px solid #FFF;
         box-shadow: 1px 1px 10px rgba(0,0,0, 0.1);
         border-radius: 4px;
@@ -169,7 +179,7 @@ section#whiteBG {
 
         section#whiteBG > section.modal > p {
             color: #283593;
-            margin: 0 4px;
+            margin: 0 4px 10px 4px;
         }
 
 nav {
@@ -230,13 +240,13 @@ table {
         color: #FFF;
     }
         table > thead th {
-            height: 30px;
+            height: 27px;
             border-radius: 2px;
             font-size: 16px;
             font-family: Calibri;
         }
 
-    table > tbody#attr tr td {
+    table > tbody#attr tr td:nth-child(3) {
         text-align: center;
     }
     table > tbody {
