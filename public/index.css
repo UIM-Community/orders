@@ -122,6 +122,56 @@ input[type="submit"] {
     margin-left: 10px;
 }
 
+section#whiteBG {
+    background: rgba(255, 255, 255, 0.75);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    section#whiteBG.hidden {
+        display: none;
+    }
+
+    section#whiteBG > section.modal {
+        background: #CFD8DC;
+        border: 2px solid #FFF;
+        box-shadow: 1px 1px 10px rgba(0,0,0, 0.1);
+        border-radius: 4px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+        section#whiteBG > section.modal > div#modal_close {
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            border-radius: 2px;
+            background: #D32F2F;
+            color: #FFF;
+            font-weight: bold;
+            right: 14px;
+            top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s linear;
+        }
+            section#whiteBG > section.modal > div#modal_close:hover {
+                cursor: pointer;
+                background: #B71C1C;
+            }
+
+        section#whiteBG > section.modal > p {
+            color: #283593;
+            margin: 0 4px;
+        }
+
 nav {
     width: 300px;
     margin-right: 10px;
@@ -170,29 +220,39 @@ aside {
         color: #1A237E;
         margin-bottom: 10px;
     }
-    aside table {
-        margin-top: 10px;
-        border-spacing: 4px;
+
+table {
+    margin-top: 10px;
+    border-spacing: 4px;
+}
+    table > thead {
+        background: #1A237E;
+        color: #FFF;
     }
-        aside table > thead {
-            background: #1A237E;
-            color: #FFF;
+        table > thead th {
+            height: 30px;
+            border-radius: 2px;
+            font-size: 16px;
+            font-family: Calibri;
         }
-            aside table > thead th {
-                height: 30px;
-            }
 
-        aside table > tbody {
-            background: #FFF;
+    table > tbody#attr tr td {
+        text-align: center;
+    }
+    table > tbody {
+        background: #FFF;
+    }
+        table > tbody tr.hidden {
+            display: none;
         }
-            aside table > tbody tr.hidden {
-                display: none;
-            }
 
-            aside table > tbody tr td {
-                padding: 3px;
-                color: #424242;
-            }
-            aside table > tbody tr td.center {
-                text-align: center;
-            }
+        table > tbody tr td {
+            height: 25px;
+            line-height: 25px;
+            padding: 0 10px;
+            color: #424242;
+            border-radius: 2px;
+        }
+        table > tbody tr td.center {
+            text-align: center;
+        }

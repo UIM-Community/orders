@@ -16,13 +16,30 @@
         </ul>
     </nav>
     <aside id="content"></aside>
+    <section id="whiteBG" class="hidden">
+        <section class="modal">
+            <div id="modal_close">X</div>
+        </section>
+    </section>
     <script src="js/utils.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         const aside = document.getElementById("content");
         const menu_ba = document.getElementById("menu_ba");
         const menu_orders = document.getElementById("menu_orders");
+        const whiteBg = document.getElementById("whiteBG");
+        const modal_close = document.getElementById("modal_close");
+        const modal = document.querySelector(".modal");
         let activeMenu = null;
+
+        function openModal(templateName, handler) {
+            whiteBg.classList.remove("hidden");
+            const template = document.getElementById(templateName);
+            const clone = document.importNode(template.content, true);
+            handler(clone);
+
+            modal.appendChild(clone);
+        }
 
         function setupMenu(menu) {
             if (activeMenu !== null) {
@@ -55,12 +72,28 @@
             const _t = new DynamicTable("businessapp_template");
             for (const [name, trigram, status, lastUpdate] of businessApplications) {
                 const date = formatDate(new Date(lastUpdate));
+                async function click() {
+                    const result = await fetch(`/bu/${trigram}`).then((res) => res.json());
+                    openModal("businessapp_modal", (clone) => {
+                        clone.querySelector(".title").textContent = name;
+
+                        const attrBody = clone.getElementById("attr");
+                        for (const [title, owner, update] of result.attributes) {
+                            const tr = document.createElement("tr");
+                            tr.appendChild(createTd(title));
+                            tr.appendChild(createTd(owner));
+                            tr.appendChild(createTd(formatDate(new Date(update))));
+                            attrBody.appendChild(tr);
+                        }
+                    });
+                }
+
                 _t.addRow([
                     trigram,
                     { value: name },
                     status ? "✔️" : "❌",
                     date,
-                    { value: "🔎", center: true }
+                    { value: "🔎", center: true, click }
                 ], status)
             }
             aside.appendChild(_t.close());
@@ -98,6 +131,15 @@
             aside.appendChild(_t.close());
         });
 
+        function modalClose() {
+            whiteBg.classList.add("hidden");
+            while (modal.firstChild) {
+                modal.removeChild(modal.firstChild);
+            }
+            modal.innerHTML = "<div id=\"modal_close\">X</div>";
+            document.getElementById("modal_close").addEventListener("click", modalClose);
+        }
+        document.getElementById("modal_close").addEventListener("click", modalClose);
         menu_ba.click();
     });
     </script>

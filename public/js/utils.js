@@ -33,6 +33,13 @@ function filterTableByActive(active, tdRow = 2) {
     }
 }
 
+function createTd(text = "") {
+    const tdElement = document.createElement("td");
+    tdElement.appendChild(document.createTextNode(text));
+
+    return tdElement;
+}
+
 function formatDate(date) {
     const day = `0${date.getDate()}`.slice(-2);
     const month = `0${date.getMonth() + 1}`.slice(-2);
@@ -75,6 +82,9 @@ class DynamicTable {
             if (typeof elem === "object") {
                 if (elem.center) {
                     tdElement.classList.add("center");
+                }
+                if (typeof elem.click === "function") {
+                    tdElement.addEventListener("click", elem.click);
                 }
                 tdElement.appendChild(document.createTextNode(elem.value));
             }
