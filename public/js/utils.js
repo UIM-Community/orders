@@ -84,6 +84,7 @@ class DynamicTable {
                     tdElement.classList.add("center");
                 }
                 if (typeof elem.click === "function") {
+                    tdElement.classList.add("clickable");
                     tdElement.addEventListener("click", elem.click);
                 }
                 tdElement.appendChild(document.createTextNode(elem.value));

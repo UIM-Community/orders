@@ -225,6 +225,7 @@ aside {
     padding: 10px;
     display: flex;
     flex-direction: column;
+    animation: fadeIn 0.25s;
 }
     aside h1 {
         color: #1A237E;
@@ -234,6 +235,7 @@ aside {
 table {
     margin-top: 10px;
     border-spacing: 4px;
+    animation: fadeIn 0.5s;
 }
     table > thead {
         background: #1A237E;
@@ -263,6 +265,12 @@ table {
             color: #424242;
             border-radius: 2px;
         }
+
+        table > tbody tr td.clickable:hover {
+            cursor: pointer;
+            background: #FFF59D;
+        }
+
         table > tbody tr td.center {
             text-align: center;
         }
