@@ -9,7 +9,7 @@
         <input type="checkbox" id="search_active" checked>
         <label for="search_active">Active</label>
     </p>
-    <input type="text" placeholder="Orders number" id="search_value">
+    <input type="text" placeholder="Orders number" id="search_value"  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <input type="submit" value="Search 🔎">
 </form>
 
@@ -17,7 +17,9 @@
     <table>
         <thead>
             <tr>
-                <th>Order number</th>
+                <th>Number</th>
+                <th style="width: 60px">Trigram</th>
+                <th>Name</th>
                 <th style="width: 60px">Status</th>
                 <th style="width: 170px">Last update</th>
                 <th style="width: 100px">Actions</th>
@@ -45,7 +47,7 @@
         <tbody id="attr"></tbody>
     </table>
     <hr>
-    <button>Save</button>
+    <button id="btn_order_save">Save</button>
 </template>
 
 <template id="order_create_modal">

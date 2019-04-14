@@ -92,7 +92,7 @@ httpServer.get("/order/:id?", async(req, res) => {
     const id = req.params.id;
 
     const sess = await getSession();
-    const tOrders = sess.getTable("cmdb_order");
+    const tOrders = sess.getTable("cmdb_order_list");
 
     if (typeof id === "string") {
         const [row = null] = await qWrap(
@@ -107,7 +107,7 @@ httpServer.get("/order/:id?", async(req, res) => {
         });
     }
 
-    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update"])));
+    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update", "trigram", "name"])));
 });
 
 httpServer.post("/order", async(req, res) => {
@@ -224,6 +224,7 @@ httpServer.patch("/order/:id/attr", async(req, res) => {
         .bind("id", orderId)
         .bind("key", key)
         .execute();
+
     if (ret.getAffectedRowsCount() !== 1) {
         return send(res, 500, `Unable to update attributes for order id ${orderId}`);
     }

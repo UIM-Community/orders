@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+    };
     const aside = document.getElementById("content");
     const menuBusinessApp = document.getElementById("menu_ba");
     const menuOrders = document.getElementById("menu_orders");
@@ -137,14 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             information: information.value
                         }
                     };
-                    console.log(body);
 
                     const rawResponse = await fetch("/order", {
                         method: "POST",
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json"
-                        },
+                        headers,
                         body: JSON.stringify(body)
                     });
 
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         menuOrders.click();
                     }
                     else {
-                        const error = rawResponse.statusText;
+                        const error = await rawResponse.text();
                         console.log(error);
                     }
                 });
@@ -165,11 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
         orders = orders.sort((left, right) => right[3] - left[3]);
 
         const _t = new DynamicTable("order_template");
-        for (const [id, number, status, lastUpdate] of orders) {
+        for (const [id, number, status, lastUpdate, trigram, name] of orders) {
             const date = formatDate(new Date(lastUpdate));
             async function click() {
                 const result = await fetch(`/order/${id}/attr`).then((res) => res.json());
-                console.log(result);
 
                 openModal("order_modal", (clone) => {
                     clone.querySelector(".title").textContent = `Order n'${number} (id: ${id})`;
@@ -178,17 +177,59 @@ document.addEventListener("DOMContentLoaded", () => {
                     for (const [title, value] of Object.entries(result)) {
                         const tr = document.createElement("tr");
                         tr.appendChild(createTd(title));
-                        tr.appendChild(createInputTd(`input_${title}`, value));
+                        tr.appendChild(createInputTd(title, value));
                         attrBody.appendChild(tr);
                     }
+
+                    const orderActive = clone.getElementById("order_active");
+                    if (!status) {
+                        orderActive.checked = false;
+                    }
+                    let initialState = orderActive.checked;
+
+                    const btnSave = clone.getElementById("btn_order_save");
+                    btnSave.addEventListener("click", async() => {
+                        const inputs = document.querySelectorAll("input.modal_input");
+
+                        if (initialState !== orderActive.checked) {
+                            fetch(`/order/${number}`, {
+                                method: "PATCH",
+                                headers,
+                                body: JSON.stringify({ status: orderActive.checked })
+                            });
+                        }
+
+                        for (const input of inputs) {
+                            const body = { key: input.id, value: input.value };
+                            if (result[input.id] === body.value) {
+                                continue;
+                            }
+
+                            const httpResponse = await fetch(`/order/${id}/attr`, {
+                                method: "PATCH",
+                                headers,
+                                body: JSON.stringify(body)
+                            });
+                            if (httpResponse.status !== 200) {
+                                console.log(await result.text());
+                            }
+                        }
+
+                        document.getElementById("modal_close").click();
+                        menuOrders.click();
+                    });
                 });
             }
 
             _t.addRow([
                 number,
+                trigram,
+                name,
                 status ? "✔️" : "❌",
                 date,
-                "🔎",
+                { value: "🔎", center: true, click: () => {
+                    console.log("clicked!");
+                } },
                 { value: "⚙️", center: true, click }
             ], status);
         }

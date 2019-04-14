@@ -50,7 +50,7 @@ function createMaterialInput(label, options = {}) {
     const labelElement = document.createElement("label");
     const inputElement = document.createElement("input");
     inputElement.setAttribute("type", "text");
-    // inputElement.required = true;
+    inputElement.required = true;
     labelElement.appendChild(document.createTextNode(label));
 
     groupElement.appendChild(inputElement);
@@ -64,6 +64,7 @@ function createInputTd(id, text = "") {
     const inputElement = document.createElement("input");
     inputElement.type = "text";
     inputElement.id = id;
+    inputElement.classList.add("modal_input");
     inputElement.value = text;
 
     tdElement.style.backgroundColor = "#ECEFF1";
@@ -118,7 +119,7 @@ class DynamicTable {
         const tr = document.createElement("tr");
         for (const elem of elements) {
             const tdElement = document.createElement("td");
-            if (typeof elem === "object") {
+            if (typeof elem === "object" && elem !== null) {
                 if (elem.center) {
                     tdElement.classList.add("center");
                 }
