@@ -1,7 +1,8 @@
 require("make-promises-safe");
 
 // Require Node.js Dependencies
-const { readFile } = require("fs").promises;
+const { readFileSync, readFile } = require("fs");
+const { promisify } = require("util");
 const { join } = require("path");
 
 // Require Third-party Dependencies
@@ -26,6 +27,11 @@ const DEFAULT_ORDER_ATTR = {
     Information: ""
 };
 
+// Globals
+const readAsync = promisify(readFile);
+const HTMLCache = new Map();
+const HTMLMainPage = readFileSync(join(VIEW_DIR, "index.html"), { encoding: "utf8" });
+
 // Create HTTP Server
 const assets = sirv("public", {
     dev: true
@@ -35,8 +41,7 @@ httpServer.use(compress, assets);
 httpServer.use(bodyParser.json());
 
 httpServer.get("/view", async(req, res) => {
-    const view = await readFile(join(VIEW_DIR, "index.html"));
-    send(res, 200, view, { "Content-Type": "text/html" });
+    send(res, 200, HTMLMainPage, { "Content-Type": "text/html" });
 });
 
 httpServer.get("/view/:name", async(req, res) => {
@@ -45,8 +50,11 @@ httpServer.get("/view/:name", async(req, res) => {
         return send(res, 500, "Invalid template name");
     }
 
-    const view = await readFile(join(VIEW_DIR, "modules", `${name}.html`));
-    send(res, 200, view, { "Content-Type": "text/html" });
+    if (!HTMLCache.has(name)) {
+        const view = await readAsync(join(VIEW_DIR, "modules", `${name}.html`));
+        HTMLCache.set(name, view);
+    }
+    send(res, 200, HTMLCache.get(name), { "Content-Type": "text/html" });
 });
 
 httpServer.get("/", (req, res) => {
