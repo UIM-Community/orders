@@ -97,6 +97,10 @@ input[type="text"] {
     outline: none;
 }
 
+::placeholder { /* Firefox, Chrome, Opera */
+    color: #607D8B;
+}
+
 form#search {
     margin-left: auto;
     margin-right: 4px;
@@ -111,19 +115,20 @@ form#search {
     }
 
 button {
-    height: 30px;
+    height: 40px;
     border: none;
     outline: none;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     background: #512DA8;
-    padding: 0 10px;
+    padding: 0 20px;
     color: #FFF;
     transition: 0.2s linear;
     font-family: Roboto;
+    font-weight: bold;
 }
     button:hover {
         cursor: pointer;
-        background: #689F38;
+        background: #1A237E;
     }
 
 @-webkit-keyframes fadeIn {
@@ -204,14 +209,18 @@ button {
 input[type="submit"] {
     width: 100px;
     background: #673AB7;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     color: #FFF;
-    border: 2px solid #311B92;
-    border-radius: 2px;
     margin-left: 10px;
+    border: none;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
 }
+    input[type="submit"]:hover {
+        cursor: pointer;
+        background: #1A237E;
+    }
 
 section#whiteBG {
     background: rgba(255, 255, 255, 0.75);
@@ -352,6 +361,9 @@ table {
     table > tbody {
         background: #FFF;
     }
+        table > tbody tr {
+            animation: fadeIn 1s;
+        }
         table > tbody tr.hidden {
             display: none;
         }
