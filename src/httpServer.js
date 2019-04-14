@@ -190,7 +190,7 @@ httpServer.get("/order/:id/attr", async(req, res) => {
             return prev;
         }, {});
 
-        return send(res, 200, Object.assign(DEFAULT_ORDER_ATTR, result));
+        return send(res, 200, Object.assign({}, DEFAULT_ORDER_ATTR, result));
     }
     catch (err) {
         return send(res, 500, err.message);

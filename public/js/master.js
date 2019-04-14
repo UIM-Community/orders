@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Fetch and hydrate business applications
         let businessApplications = await fetch("/bu").then((res) => res.json());
-        businessApplications = businessApplications.sort((a, b) => b[3] - a[3]);
+        businessApplications = businessApplications.sort((left, right) => right[3] - left[3]);
 
         const _t = new DynamicTable("businessapp_template");
         for (const [name, trigram, status, lastUpdate] of businessApplications) {
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 status ? "✔️" : "❌",
                 date,
                 { value: "🔎", center: true, click }
-            ], status)
+            ], status);
         }
         aside.appendChild(_t.close());
     });
@@ -115,18 +115,61 @@ document.addEventListener("DOMContentLoaded", () => {
                     createMaterialInput("Team")
                 ]));
                 formCreateOrder.appendChild(createMaterialInput("Description"));
+                const submit = document.createElement("input");
+                submit.setAttribute("type", "submit");
+                submit.value = "Create";
+
+                formCreateOrder.appendChild(submit);
+
+                formCreateOrder.addEventListener("submit", async(event) => {
+                    event.preventDefault();
+                    const inputs = [...formCreateOrder.querySelectorAll("input")];
+                    const [title, app, mail, information, serviceNow, team, description] = inputs;
+
+                    const body = {
+                        application: app.value,
+                        attr: {
+                            title: title.value,
+                            description: description.value,
+                            team: team.value,
+                            servicenow: serviceNow.value,
+                            mail: mail.value,
+                            information: information.value
+                        }
+                    };
+                    console.log(body);
+
+                    const rawResponse = await fetch("/order", {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (rawResponse.status === 201) {
+                        document.getElementById("modal_close").click();
+                        menuOrders.click();
+                    }
+                    else {
+                        const error = rawResponse.statusText;
+                        console.log(error);
+                    }
+                });
             });
         });
 
         // Fetch and hydrate orders
         let orders = await fetch("/order").then((res) => res.json());
-        orders = orders.sort((a, b) => b[3] - a[3]);
+        orders = orders.sort((left, right) => right[3] - left[3]);
 
         const _t = new DynamicTable("order_template");
         for (const [id, number, status, lastUpdate] of orders) {
             const date = formatDate(new Date(lastUpdate));
             async function click() {
                 const result = await fetch(`/order/${id}/attr`).then((res) => res.json());
+                console.log(result);
 
                 openModal("order_modal", (clone) => {
                     clone.querySelector(".title").textContent = `Order n'${number} (id: ${id})`;
@@ -147,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 date,
                 "🔎",
                 { value: "⚙️", center: true, click }
-            ], status)
+            ], status);
         }
         aside.appendChild(_t.close());
     });

@@ -43,20 +43,10 @@ section.double_group {
 section.form_group {
     display: flex;
     flex-direction: column;
-    height: 70px;
+    height: 55px;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
-    section.form_group.error > input {
-        border-color: #D32F2F !important;
-    }
-    section.form_group.error > label {
-        color: #D32F2F !important;
-    }
-    section.form_group.error > section {
-        color: #D32F2F !important;
-    }
-
     section.form_group > input {
         width: auto !important;
         margin-top: 10px;
@@ -80,19 +70,6 @@ section.form_group {
         transition: 0.2s ease all;
         font-weight: bold;
     }
-    section.form_group > section {
-        flex-grow: 1;
-        display: flex;
-        font-size: 14px;
-        color: #607D8B;
-    }
-        section.form_group > section > p {
-            font-style: italic;
-            font-size: 12px;
-        }
-        section.form_group > section > b {
-            margin-left: auto;
-        }
 
 input[type="text"] {
     width: 250px;
@@ -225,6 +202,7 @@ input[type="submit"] {
     font-weight: bold;
     text-align: center;
     cursor: pointer;
+    height: 43px;
 }
     input[type="submit"]:hover {
         cursor: pointer;
@@ -262,6 +240,10 @@ section#whiteBG {
             display: flex;
             flex-direction: column;
         }
+            section#whiteBG > section.modal > form > input[type="submit"] {
+                margin-left: auto;
+            }
+
         section#whiteBG > section.modal > div#modal_close {
             width: 25px;
             height: 25px;
@@ -377,6 +359,9 @@ table {
             display: none;
         }
 
+        table > tbody tr td input {
+            margin: 0;
+        }
         table > tbody tr td {
             height: 25px;
             line-height: 25px;
