@@ -33,6 +33,19 @@ function filterTableByActive(active, tdRow = 2) {
     }
 }
 
+function createInputTd(id, text = "") {
+    const tdElement = document.createElement("td");
+    const inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.id = id;
+    inputElement.value = text;
+
+    tdElement.style.backgroundColor = "#ECEFF1";
+    tdElement.appendChild(inputElement);
+
+    return tdElement;
+}
+
 function createTd(text = "") {
     const tdElement = document.createElement("td");
     tdElement.appendChild(document.createTextNode(text));

@@ -27,19 +27,88 @@ body {
     font-family: Roboto;
 }
 
-form {
+section.form_group {
+    display: flex;
+    flex-direction: column;
+    height: 70px;
+    position: relative;
+    margin-bottom: 20px;
+}
+    section.form_group.error > input {
+        border-color: #D32F2F !important;
+    }
+    section.form_group.error > label {
+        color: #D32F2F !important;
+    }
+    section.form_group.error > section {
+        color: #D32F2F !important;
+    }
+        section.form_group.error > section > p {
+            display: flex;
+        }
+
+    section.form_group > input {
+        width: auto !important;
+        margin-top: 10px;
+        background: transparent;
+    }
+        section.form_group > input:focus {
+            border-color: #283593;
+        }
+
+    section.form_group > input:focus ~ label, section.form_group > input:valid ~ label {
+        top: 0px;
+        font-size: 13px;
+        color: #283593;
+        font-weight: 400;
+    }
+    section.form_group > label {
+        position: absolute;
+        left: 10px;
+        top: 19px;
+        color: #607D8B;
+        transition: 0.2s ease all;
+        font-weight: bold;
+    }
+    section.form_group > section {
+        flex-grow: 1;
+        display: flex;
+        font-size: 14px;
+        color: #607D8B;
+    }
+        section.form_group > section > p {
+            font-style: italic;
+            font-size: 12px;
+            display: none;
+        }
+        section.form_group > section > b {
+            margin-left: auto;
+        }
+
+input[type="text"] {
+    width: 250px;
+    padding: 0 10px;
+    border: none;
+    border-bottom: 3px solid #607D8B;
+    height: 40px;
+    transition: 0.2s ease all;
+    font-family: Roboto;
+    font-weight: bold;
+    outline: none;
+}
+
+form#search {
     margin-left: auto;
     margin-right: 4px;
     display: flex;
 }
-
-form > p {
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    color: #212121;
-}
+    form#search > p {
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        color: #212121;
+    }
 
 button {
     height: 30px;
@@ -132,19 +201,12 @@ button {
     color: #aaa;
 }
 
-input[type="text"] {
-    width: 250px;
-    padding: 5px;
-    border: 2px solid #CCC;
-    border-radius: 4px;
-}
-
 input[type="submit"] {
     width: 100px;
     background: #673AB7;
     color: #FFF;
     border: 2px solid #311B92;
-    border-radius: 4px;
+    border-radius: 2px;
     margin-left: 10px;
     font-weight: bold;
     text-align: center;
@@ -178,6 +240,10 @@ section#whiteBG {
         flex-direction: column;
         position: relative;
     }
+        section#whiteBG > section.modal > form {
+            display: flex;
+            flex-direction: column;
+        }
         section#whiteBG > section.modal > div#modal_close {
             width: 25px;
             height: 25px;
@@ -200,13 +266,14 @@ section#whiteBG {
 
 
         section#whiteBG > section.modal hr {
-            width: 100%;
-            border: 1px solid #CFD8DC;
+            width: 98%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 10px;
         }
-        section#whiteBG > section.modal p {
+        section#whiteBG > section.modal > p {
             color: #283593;
             margin: 0 4px 10px 4px;
+            font-weight: bold;
         }
         section#whiteBG > section.modal button {
             width: 150px;

@@ -1,7 +1,7 @@
 <h1>Orders</h1>
 
 <section>
-    <button>➕ Create new order</button>
+    <button id="btn_createOrder">Create Order</button>
 </section>
 
 <form id="search">
@@ -46,4 +46,33 @@
     </table>
     <hr>
     <button>Save</button>
+</template>
+
+<template id="order_create_modal">
+    <p class="title">Create Order</p>
+    <hr>
+    <form id="create_order">
+        <section class="form_group">
+            <input type="text" required>
+            <label>Description</label>
+            <section><p>Details or error</p><b>0/255</b></section>
+        </section>
+        <section class="form_group">
+            <input type="text" required>
+            <label>Title</label>
+            <section><p>Details or error</p><b>0/255</b></section>
+        </section>
+        <section class="form_group">
+            <input type="text" required>
+            <label>Application (Trigram)</label>
+            <section><p>Details or error</p><b>0/255</b></section>
+        </section>
+        <section class="form_group">
+            <input type="text" required>
+            <label>Mail</label>
+            <section><p>Details or error</p><b>0/255</b></section>
+        </section>
+    </form>
+    <hr>
+    <button>Create</button>
 </template>

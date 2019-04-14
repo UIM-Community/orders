@@ -1,6 +1,8 @@
 {
     "extends": "@slimio/eslint-config",
     "rules": {
-        "max-lines-per-function": "off"
+        "max-lines-per-function": "off",
+        "no-loop-func": "off",
+        "no-inner-declarations": "off"
     }
 }
