@@ -107,7 +107,7 @@ httpServer.get("/order/:id?", async(req, res) => {
         });
     }
 
-    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update", "trigram", "name"])));
+    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update", "trigram", "name", "title"])));
 });
 
 httpServer.post("/order", async(req, res) => {

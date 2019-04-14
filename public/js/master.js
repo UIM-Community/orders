@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         orders = orders.sort((left, right) => right[3] - left[3]);
 
         const _t = new DynamicTable("order_template");
-        for (const [id, number, status, lastUpdate, trigram, name] of orders) {
+        for (const [id, number, status, lastUpdate, trigram, name, title] of orders) {
             const date = formatDate(new Date(lastUpdate));
             async function click() {
                 const result = await fetch(`/order/${id}/attr`).then((res) => res.json());
@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 number,
                 trigram,
                 name,
+                title,
                 status ? "✔️" : "❌",
                 date,
                 { value: "🔎", center: true, click: () => {
