@@ -99,8 +99,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const createOrder = document.getElementById("btn_createOrder");
         createOrder.addEventListener("click", () => {
+            // eslint-disable-next-line
             openModal("order_create_modal", (clone) => {
-                // Listen submit here!
+                const formCreateOrder = clone.getElementById("create_order");
+                formCreateOrder.appendChild(createGroup([
+                    createMaterialInput("Title", { max: 50 }),
+                    createMaterialInput("Application (Trigram)", { max: 3 })
+                ]));
+                formCreateOrder.appendChild(createGroup([
+                    createMaterialInput("Mail"),
+                    createMaterialInput("Information")
+                ]));
+                formCreateOrder.appendChild(createGroup([
+                    createMaterialInput("Service Now"),
+                    createMaterialInput("Team")
+                ]));
+                formCreateOrder.appendChild(createMaterialInput("Description"));
             });
         });
 

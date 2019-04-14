@@ -27,6 +27,19 @@ body {
     font-family: Roboto;
 }
 
+section.double_group {
+    display: flex;
+    width: 600px;
+}
+    section.double_group section.form_group {
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 290px;
+    }
+    section.double_group section.form_group + section.form_group {
+        margin-left: 20px;
+    }
+
 section.form_group {
     display: flex;
     flex-direction: column;
@@ -43,9 +56,6 @@ section.form_group {
     section.form_group.error > section {
         color: #D32F2F !important;
     }
-        section.form_group.error > section > p {
-            display: flex;
-        }
 
     section.form_group > input {
         width: auto !important;
@@ -79,7 +89,6 @@ section.form_group {
         section.form_group > section > p {
             font-style: italic;
             font-size: 12px;
-            display: none;
         }
         section.form_group > section > b {
             margin-left: auto;

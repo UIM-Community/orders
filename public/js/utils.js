@@ -33,6 +33,63 @@ function filterTableByActive(active, tdRow = 2) {
     }
 }
 
+function createGroup(inputs) {
+    const group = document.createElement("section");
+    group.classList.add("double_group");
+    for (const input of inputs) {
+        group.appendChild(input);
+    }
+
+    return group;
+}
+
+function createMaterialInput(label, options = {}) {
+    const { min = 0, max = 255 } = options;
+
+    const bElement = document.createElement("b");
+    bElement.textContent = `${min}/${max}`;
+    const pElement = document.createElement("p");
+
+    const groupElement = document.createElement("section");
+    groupElement.classList.add("form_group");
+
+    const inputElement = document.createElement("input");
+    inputElement.setAttribute("type", "text");
+    inputElement.required = true;
+    inputElement.addEventListener("keydown", (event) => {
+        const key = event.keyCode || event.charCode;
+        let len = key === 8 ? inputElement.value.length - 1 : inputElement.value.length + 1;
+        if (len < 0) {
+            len = 0;
+        }
+
+        if (len > max) {
+            if (!groupElement.classList.contains("error")) {
+                groupElement.classList.add("error");
+                pElement.textContent = `Input length exceed the maximum length of ${max}...`;
+            }
+        }
+        else if (groupElement.classList.contains("error")) {
+            groupElement.classList.remove("error");
+            pElement.textContent = "";
+        }
+        bElement.textContent = `${len}/${max}`;
+    });
+
+    const labelElement = document.createElement("label");
+    labelElement.appendChild(document.createTextNode(label));
+
+    const detailsElement = document.createElement("section");
+    detailsElement.appendChild(pElement);
+    detailsElement.appendChild(bElement);
+
+    groupElement.appendChild(inputElement);
+    groupElement.appendChild(labelElement);
+    groupElement.appendChild(detailsElement);
+
+    return groupElement;
+}
+
 function createInputTd(id, text = "") {
     const tdElement = document.createElement("td");
     const inputElement = document.createElement("input");
