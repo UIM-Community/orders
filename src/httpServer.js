@@ -155,7 +155,7 @@ httpServer.patch("/order/:id", async(req, res) => {
     const orderId = req.params.id;
     const status = req.body.status;
     if (typeof status !== "boolean") {
-        return send(res, 400, "body.status must be a boolean");
+        return send(res, 400, "status must be a boolean");
     }
 
     const sess = await getSession();
@@ -206,17 +206,31 @@ httpServer.patch("/order/:id/attr", async(req, res) => {
         });
     }
     catch (err) {
-        console.error(err);
-
-        return send(res, 400, err.message);
+        return send(res, 400, err[0].message);
     }
     const orderId = req.params.id;
     const { key, value } = req.body;
 
-    // TODO: Depending on key value, run validation
-    // Mail => email, Application => valid trigram
-
     const sess = await getSession();
+    if (key === "Mail") {
+        try {
+            await validate(req.body, { value: "email" });
+        }
+        catch (err) {
+            return send(res, 400, err[0].message);
+        }
+    }
+    else if (key === "Application") {
+        const [row = null] = await qWrap(
+            sess.getTable("cmdb_bu").select(["id"])
+                .where("trigram = :trigram")
+                .bind("trigram", value)
+        );
+        if (row === null) {
+            return send(res, 500, `Unable to found Business Unit with trigram '${value}'`);
+        }
+    }
+
     const ret = await sess.getTable("cmdb_order_attr")
         .update()
         .set("value", value)

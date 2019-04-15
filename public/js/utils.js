@@ -13,6 +13,32 @@ function filterTable(inputName, tdRow = 1) {
     }
 }
 
+function tdValue(tdElement) {
+    return (tdElement.textContent || tdElement.innerText).toLowerCase();
+}
+
+function searchOrder(inputName) {
+    const searchName = document.getElementById(inputName).value.toLowerCase();
+    const table = document.querySelector("table");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let id = 0; id < tr.length; id++) {
+        const td = tr[id].getElementsByTagName("td");
+        if (td.length === 0) {
+            continue;
+        }
+
+        if (tdValue(td[0]).indexOf(searchName) > -1 ||
+            tdValue(td[2]).indexOf(searchName) > -1 ||
+            tdValue(td[3]).indexOf(searchName) > -1) {
+            tr[id].style.display = "";
+        }
+        else {
+            tr[id].style.display = "none";
+        }
+    }
+}
+
 function filterTableByActive(active, tdRow = 2) {
     const table = document.querySelector("table");
     const tr = table.getElementsByTagName("tr");
@@ -50,6 +76,10 @@ function createMaterialInput(label, options = {}) {
     const labelElement = document.createElement("label");
     const inputElement = document.createElement("input");
     inputElement.setAttribute("type", "text");
+    inputElement.setAttribute("autocomplete", "off");
+    inputElement.setAttribute("autocorrect", "off");
+    inputElement.setAttribute("autocapitalize", "off");
+    inputElement.setAttribute("spellcheck", "off");
     inputElement.required = true;
     labelElement.appendChild(document.createTextNode(label));
 

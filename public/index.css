@@ -69,6 +69,7 @@ section.form_group {
         color: #607D8B;
         transition: 0.2s ease all;
         font-weight: bold;
+        pointer-events: none;
     }
 
 input[type="text"] {
@@ -239,12 +240,24 @@ section#whiteBG {
         flex-direction: column;
         position: relative;
     }
-        section#whiteBG > section.modal > form {
+        section.modal > form {
             display: flex;
             flex-direction: column;
         }
-            section#whiteBG > section.modal > form > input[type="submit"] {
+            section.modal > form > input[type="submit"] {
                 margin-left: auto;
+            }
+            section.modal span#modal_error {
+                background: #D32F2F;
+                border-radius: 10px;
+                margin-top: 5px;
+                color: #FFF;
+                padding: 5px;
+                font-size: 14px;
+                text-align: center;
+                align-content: center;
+                justify-content: center;
+                display: none;
             }
 
         section#whiteBG > section.modal > div#modal_close {

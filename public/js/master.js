@@ -91,14 +91,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const html = await fetch("/view/orders").then((res) => res.text());
         aside.innerHTML = html;
 
+        const searchBox = document.getElementById("search_active");
+
         // Add search handlers & events
         document.getElementById("search").addEventListener("submit", (event) => {
             event.preventDefault();
-            filterTable("search_value", 0);
+            const searchName = document.getElementById("search_value").value.toLowerCase();
+            searchOrder("search_value");
+
+            if (searchName.trim() === "") {
+                searchBox.dispatchEvent(new Event("change"));
+            }
         });
 
-        document.getElementById("search_active").addEventListener("change", (event) => {
-            filterTableByActive(event.target.checked, 1);
+        searchBox.addEventListener("change", (event) => {
+            filterTableByActive(event.target.checked, 4);
         });
 
         const createOrder = document.getElementById("btn_createOrder");
@@ -153,8 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         menuOrders.click();
                     }
                     else {
-                        const error = await rawResponse.text();
-                        console.log(error);
+                        const spanEl = document.getElementById("modal_error");
+                        spanEl.textContent = await rawResponse.text();
+                        spanEl.style.display = "flex";
                     }
                 });
             });
@@ -199,6 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             });
                         }
 
+                        let stayInModal = false;
                         for (const input of inputs) {
                             const body = { key: input.id, value: input.value };
                             if (result[input.id] === body.value) {
@@ -211,26 +220,31 @@ document.addEventListener("DOMContentLoaded", () => {
                                 body: JSON.stringify(body)
                             });
                             if (httpResponse.status !== 200) {
-                                console.log(await result.text());
+                                const spanEl = document.getElementById("modal_error");
+                                spanEl.textContent = await httpResponse.text();
+                                spanEl.style.display = "flex";
+                                stayInModal = true;
+                                break;
                             }
                         }
 
-                        document.getElementById("modal_close").click();
-                        menuOrders.click();
+                        if (!stayInModal) {
+                            document.getElementById("modal_close").click();
+                            menuOrders.click();
+                        }
                     });
                 });
             }
 
             _t.addRow([
-                number,
+                { value: `🔎 ${number}`, center: true, click: () => {
+                    console.log("clicked!");
+                } },
                 trigram,
                 name,
                 title,
                 status ? "✔️" : "❌",
                 date,
-                { value: "🔎", center: true, click: () => {
-                    console.log("clicked!");
-                } },
                 { value: "⚙️", center: true, click }
             ], status);
         }

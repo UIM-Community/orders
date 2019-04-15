@@ -20,7 +20,6 @@
                 <th>Title</th>
                 <th style="width: 60px">Status</th>
                 <th style="width: 170px">Last update</th>
-                <th style="width: 100px">Actions</th>
                 <th style="width: 60px"></th>
             </tr>
         </thead>
@@ -35,6 +34,7 @@
         <input type="checkbox" id="order_active" checked>
         <label for="order_active">Active</label>
     </p>
+    <span id="modal_error"></span>
     <table>
         <thead>
             <tr>
@@ -51,5 +51,7 @@
 <template id="order_create_modal">
     <p class="title">Create Order</p>
     <hr>
-    <form id="create_order"></form>
+    <form id="create_order">
+        <span id="modal_error" style="margin-bottom: 15px"></span>
+    </form>
 </template>
