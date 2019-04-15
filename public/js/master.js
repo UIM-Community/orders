@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const aside = document.getElementById("content");
     const menuBusinessApp = document.getElementById("menu_ba");
     const menuOrders = document.getElementById("menu_orders");
+    const menuAction = document.getElementById("menu_action");
     const whiteBg = document.getElementById("whiteBG");
     const modal = document.querySelector(".modal");
     let activeMenu = null;
@@ -19,6 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.appendChild(clone);
     }
 
+    function setUrl(args = {}) {
+        const currUrl = new URL(window.location);
+        currUrl.searchParams.delete("id");
+        currUrl.searchParams.delete("number");
+        for (const [key, value] of Object.entries(args)) {
+            currUrl.searchParams.set(key, value);
+        }
+        window.history.pushState("page", "Title", currUrl.href);
+    }
+
     function setupMenu(menu) {
         if (activeMenu !== null) {
             aside.innerHTML = "";
@@ -28,9 +39,32 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMenu.classList.add("active");
     }
 
+    async function openAction(id, number) {
+        setupMenu(menuAction);
+        setUrl({ page: "action", id, number });
+        const html = await fetch("/view/action").then((res) => res.text());
+        aside.innerHTML = html;
+
+        const title = document.querySelector(".action_title");
+        title.textContent = `Order Number: ${number}`;
+
+        const actionElement = document.getElementById("action_groups");
+        const actions = await fetch(`order/${id}/action`).then((res) => res.json());
+        const fragment = document.createDocumentFragment();
+        for (const action of actions) {
+            const details = createDetails(`Condition n'${action.condition}`);
+            const pElement = document.createElement("p");
+            pElement.textContent = "hello";
+            details.appendChild(pElement);
+            fragment.appendChild(details);
+        }
+        actionElement.appendChild(fragment);
+    }
+
     menuBusinessApp.addEventListener("click", async() => {
         // Fetch view
         setupMenu(menuBusinessApp);
+        setUrl({ page: "businessapp" });
         const html = await fetch("/view/business_application").then((res) => res.text());
         aside.innerHTML = html;
 
@@ -89,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     menuOrders.addEventListener("click", async() => {
         // Fetch view
         setupMenu(menuOrders);
+        setUrl({ page: "orders" });
         const html = await fetch("/view/orders").then((res) => res.text());
         aside.innerHTML = html;
 
@@ -269,26 +304,52 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            async function actionClick() {
-                console.log("clicked!");
-                activeMenu.classList.remove("active");
-                activeMenu = null;
-                const html = await fetch("/view/action").then((res) => res.text());
-                aside.innerHTML = html;
-            }
-
             _t.addRow([
-                { value: number, center: true, click: actionClick },
+                { value: number, center: true, click: () => {
+                    openAction(id, number);
+                } },
                 trigram,
                 name,
                 title,
                 status ? "✔️" : "❌",
                 date,
-                { value: "⚙️", center: true, click: actionClick },
+                { value: "⚙️", center: true, click: () => {
+                    openAction(id, number);
+                } },
                 { value: "✏️", center: true, click }
             ], status);
         }
         aside.appendChild(_t.close());
+    });
+
+    menuAction.addEventListener("click", async() => {
+        openModal("modal_action", (clone) => {
+            const formAction = clone.getElementById("action_form");
+
+            const inputGroup = createMaterialInput("Number");
+            formAction.appendChild(inputGroup);
+            const submit = document.createElement("input");
+            submit.setAttribute("type", "submit");
+            submit.value = "Find";
+
+            formAction.addEventListener("submit", async(event) => {
+                event.preventDefault();
+                const inputValue = inputGroup.childNodes[0].value;
+                const raw = await fetch(`/order/${inputValue}`);
+                if (raw.status === 200) {
+                    const result = await raw.json();
+                    openAction(result.id, result.number);
+                    document.getElementById("modal_close").click();
+                }
+                else {
+                    const spanEl = document.getElementById("modal_error");
+                    spanEl.textContent = await raw.text();
+                    spanEl.style.display = "flex";
+                }
+            });
+
+            formAction.appendChild(submit);
+        });
     });
 
     function modalClose() {
@@ -300,5 +361,22 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modal_close").addEventListener("click", modalClose);
     }
     document.getElementById("modal_close").addEventListener("click", modalClose);
-    menuBusinessApp.click();
+
+    const url = new URL(window.location);
+    if (url.searchParams.has("page")) {
+        switch (url.searchParams.get("page")) {
+            case "businessapp":
+                menuBusinessApp.click();
+                break;
+            case "orders":
+                menuOrders.click();
+                break;
+            case "action":
+                openAction(url.searchParams.get("id"), url.searchParams.get("number"));
+                break;
+        }
+    }
+    else {
+        menuBusinessApp.click();
+    }
 });

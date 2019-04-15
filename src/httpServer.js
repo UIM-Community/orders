@@ -93,10 +93,11 @@ httpServer.get("/order/:id?", async(req, res) => {
 
     const sess = await getSession();
     const tOrders = sess.getTable("cmdb_order_list");
+    const fields = ["id", "number", "status", "last_update", "trigram", "name", "title"];
 
     if (typeof id === "string") {
         const [row = null] = await qWrap(
-            tOrders.select(["id", "number", "status", "last_update"]).where("number = :id").bind("id", id)
+            tOrders.select(fields).where("number = :id").bind("id", id)
         );
         if (row === null) {
             return send(res, 500, `Unable to found order with id ${id}`);
@@ -107,7 +108,7 @@ httpServer.get("/order/:id?", async(req, res) => {
         });
     }
 
-    return send(res, 200, await qWrap(tOrders.select(["id", "number", "status", "last_update", "trigram", "name", "title"])));
+    return send(res, 200, await qWrap(tOrders.select(fields)));
 });
 
 httpServer.post("/order", async(req, res) => {
@@ -251,18 +252,13 @@ httpServer.get("/order/:id/action", async(req, res) => {
 
     const sess = await getSession();
     const rows = await qWrap(sess.getTable("cmdb_order_action")
-        .select(["id", "bu_id", "condition", "json"])
+        .select(["bu_id", "condition", "token", "time_shift", "json"])
         .where("order_id = :id")
         .bind("id", orderId)
     );
 
-    const filtered = rows.map((row) => {
-        return {
-            id: row[0],
-            bu_id: row[1],
-            condition: row[2],
-            actions: row[3]
-        };
+    const filtered = rows.map(([bu_id, condition, token, time_shift, json]) => {
+        return { bu_id, condition, token, time_shift, json };
     });
 
     send(res, 200, filtered);

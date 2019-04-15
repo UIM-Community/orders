@@ -102,6 +102,15 @@ function createMaterialInput(label, options = {}) {
     return groupElement;
 }
 
+function createDetails(summary) {
+    const details = document.createElement("details");
+    const summaryElement = document.createElement("summary");
+    summaryElement.textContent = summary;
+    details.appendChild(summaryElement);
+
+    return details;
+}
+
 function createInputTd(id, text = "") {
     const tdElement = document.createElement("td");
     tdElement.classList.add("input_td");
