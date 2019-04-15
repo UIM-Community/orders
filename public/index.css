@@ -170,11 +170,19 @@ button {
     font-family: Roboto;
     font-weight: bold;
 }
+    button.del {
+        background: #E53935 !important;
+    }
+        button.del:hover {
+            cursor: pointer;
+            background: #B71C1C;
+        }
+
     button:disabled {
         background: #CCC;
         color: #FFF;
     }
-    button:not(:disabled):hover {
+    button:not(.del):not(:disabled):hover {
         cursor: pointer;
         background: #1A237E;
     }
@@ -285,25 +293,42 @@ fieldset {
 section#action_groups {
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    margin-top: 35px;
     border-radius: 2px;
 }
 
+details {
+    border: 1px solid #607D8B;
+    padding: 8px;
+    border-radius: 2px;
+    position: relative;
+    min-height: 10px;
+}
 details + details {
-    margin-top: 5px;
+    margin-top: 15px;
 }
 summary {
+    background: rgb(248, 250, 251);
     outline: none;
     user-select: none;
-    padding: 5px;
+    padding: 0 10px;
+    height: 20px;
+    line-height: 20px;
     border-radius: 2px;
     margin-bottom: 10px;
+    position: absolute;
+    left: 10px;
+    top: -10px;
 }
     summary:hover {
         cursor: pointer;
-        background: #607D8B;
-        color: #FFF;
+        color: #512DA8;
     }
+
+section.condition_line {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
 
 section#whiteBG {
     background: rgba(178, 215, 250, 0.5);
@@ -408,7 +433,7 @@ nav {
             line-height: 30px;
             padding-left: 10px;
             color: #1A237E;
-            background: rgba(240, 240, 240, 0.25);
+            background: rgb(248, 250, 251);
             border-radius: 5px;
             transition: 0.2s background linear;
         }
@@ -427,7 +452,7 @@ nav {
 
 aside {
     flex-grow: 1;
-    background: rgba(240, 240, 240, 0.25);
+    background: rgb(248, 250, 251);
     border-radius: 5px;
     padding: 10px;
     display: flex;

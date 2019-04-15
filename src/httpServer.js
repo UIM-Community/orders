@@ -251,14 +251,14 @@ httpServer.get("/order/:id/action", async(req, res) => {
     const orderId = req.params.id;
 
     const sess = await getSession();
-    const rows = await qWrap(sess.getTable("cmdb_order_action")
-        .select(["bu_id", "condition", "token", "time_shift", "json"])
+    const rows = await qWrap(sess.getTable("cmdb_order_action_list")
+        .select(["bu_id", "trigram", "condition", "token", "time_shift", "json"])
         .where("order_id = :id")
         .bind("id", orderId)
     );
 
-    const filtered = rows.map(([bu_id, condition, token, time_shift, json]) => {
-        return { bu_id, condition, token, time_shift, json };
+    const filtered = rows.map(([bu_id, trigram, condition, token, time_shift, json]) => {
+        return { bu_id, trigram, condition, token, time_shift, json };
     });
 
     send(res, 200, filtered);

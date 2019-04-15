@@ -49,13 +49,42 @@ document.addEventListener("DOMContentLoaded", () => {
         title.textContent = `Order Number: ${number}`;
 
         const actionElement = document.getElementById("action_groups");
-        const actions = await fetch(`order/${id}/action`).then((res) => res.json());
+        const conditions = await fetch(`order/${id}/action`).then((res) => res.json());
+        const template = document.getElementById("condition");
+
         const fragment = document.createDocumentFragment();
-        for (const action of actions) {
-            const details = createDetails(`Condition n'${action.condition}`);
-            const pElement = document.createElement("p");
-            pElement.textContent = "hello";
-            details.appendChild(pElement);
+        for (const condition of conditions) {
+            const details = createDetails(`Condition n'${condition.condition}`);
+            const clone = document.importNode(template.content, true);
+
+            const line = clone.querySelector(".double_group");
+            const trigramGroup = createMaterialInput("Application Trigram");
+            const tokenGroup = createMaterialInput("Regex ( Token )");
+
+            trigramGroup.childNodes[0].value = condition.trigram;
+            tokenGroup.childNodes[0].value = atob(condition.token);
+            line.appendChild(trigramGroup);
+            line.appendChild(tokenGroup);
+
+            const _t = new DynamicTable("action_table");
+            for (const { type, schedule, arguments: args } of condition.json) {
+                const reSchedule = schedule.slice(0, 50);
+                _t.addRow([
+                    type,
+                    reSchedule,
+                    { value: args.template, center: false },
+                    { value: "✏️", center: true }
+                ]);
+            }
+            clone.appendChild(_t.close());
+
+            clone.appendChild(document.createElement("hr"));
+            const btnSave = document.createElement("button");
+            btnSave.disabled = true;
+            btnSave.textContent = "Save";
+            clone.appendChild(btnSave);
+
+            details.appendChild(clone);
             fragment.appendChild(details);
         }
         actionElement.appendChild(fragment);
