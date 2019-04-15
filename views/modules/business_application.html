@@ -1,10 +1,11 @@
 <h1>Business Applications</h1>
 
 <form id="search">
-    <p>
-        <input type="checkbox" id="search_active" checked>
-        <label for="search_active">Active</label>
-    </p>
+    <select id="search_active">
+        <option value="active" selected="selected">✔️ Active only</option>
+        <option value="inactive">❌ Inactive only</option>
+        <option value="all">    All Business Application</option>
+    </select>
     <input type="text" placeholder="Business Application name" id="search_value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <input type="submit" value="Search 🔎">
 </form>

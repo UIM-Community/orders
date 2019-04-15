@@ -27,9 +27,22 @@ body {
     font-family: Roboto;
 }
 
-section.double_group {
+section.order_state {
     display: flex;
-    width: 600px;
+    height: 40px;
+    margin-top: 5px;
+    margin-left: 4px;
+    align-items: center;
+}
+    section.order_state > select {
+        margin-left: auto;
+        margin-right: 4px;
+        height: 40px;
+    }
+
+section.double_group {
+    min-width: 600px;
+    display: flex;
 }
     section.double_group section.form_group {
         flex-grow: 1;
@@ -47,6 +60,44 @@ section.form_group {
     position: relative;
     margin-bottom: 10px;
 }
+    section.form_group > span {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        width: 23px;
+        height: 23px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 30px;
+        background: #607D8B;
+        color: #FFF;
+        font-weight: bold;
+        font-size: 15px;
+        transition: 0.2s linear all;
+    }
+        section.form_group > span > p {
+            display: none;
+        }
+        section.form_group > span:hover {
+            background: #283593;
+            cursor: pointer;
+        }
+        section.form_group > span:hover p {
+            display: flex;
+            position: absolute;
+            background: #212121;
+            padding: 5px;
+            font-size: 14px;
+            color: #FFF;
+            border-radius: 4px;
+            top: 30px;
+            right: 0px;
+            font-weight: 400;
+            min-width: 200px;
+            max-width: 400px;
+        }
+
     section.form_group > input {
         width: auto !important;
         margin-top: 10px;
@@ -84,6 +135,13 @@ input[type="text"] {
     outline: none;
 }
 
+select {
+    outline: none;
+    border-radius: 4px;
+    border: 2px solid #607D8B;
+    padding: 0 10px;
+}
+
 ::placeholder { /* Firefox, Chrome, Opera */
     color: #607D8B;
 }
@@ -95,20 +153,16 @@ form#search {
     form#search > button {
         margin-left: 4px;
     }
-    form#search > p {
+    form#search > #search_active {
         margin-left: auto;
         margin-right: 20px;
-        display: flex;
-        align-items: center;
-        position: relative;
-        color: #212121;
     }
 
 button {
     height: 43px;
     border: none;
     outline: none;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    box-shadow: 0 8px 10px 0 rgba(0,0,0,0.1), 0 6px 12px 0 rgba(0,0,0,0.1);
     background: #512DA8;
     padding: 0 20px;
     color: #FFF;
@@ -116,7 +170,11 @@ button {
     font-family: Roboto;
     font-weight: bold;
 }
-    button:hover {
+    button:disabled {
+        background: #CCC;
+        color: #FFF;
+    }
+    button:not(:disabled):hover {
         cursor: pointer;
         background: #1A237E;
     }
@@ -213,6 +271,17 @@ input[type="submit"] {
         background: #1A237E;
     }
 
+fieldset {
+    border-color: 2px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    margin: 5px 0;
+}
+    fieldset legend {
+        font-size: 15px;
+        font-weight: bold;
+        color: #607D8B;
+    }
+
 section#whiteBG {
     background: rgba(255, 255, 255, 0.75);
     width: 100%;
@@ -264,7 +333,7 @@ section#whiteBG {
             width: 25px;
             height: 25px;
             position: absolute;
-            border-radius: 2px;
+            border-radius: 4px;
             background: #D32F2F;
             color: #FFF;
             font-weight: bold;
@@ -375,9 +444,19 @@ table {
             display: none;
         }
 
-        table > tbody tr td input {
-            margin: 0;
+        table > tbody tr td.title {
+            background: #1A237E;
+            color: #FFF;
         }
+        table > tbody tr td.input_td {
+            background: #ECEFF1;
+            padding: 0px !important;
+        }
+            table > tbody tr td.input_td input {
+                border: 2px solid #607D8B;
+                border-radius: 2px;
+            }
+
         table > tbody tr td {
             height: 25px;
             line-height: 25px;

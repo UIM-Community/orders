@@ -4,6 +4,7 @@
         "max-lines-per-function": "off",
         "no-loop-func": "off",
         "no-inner-declarations": "off",
-        "max-nested-callbacks": "off"
+        "max-nested-callbacks": "off",
+        "no-alert": "off"
     }
 }

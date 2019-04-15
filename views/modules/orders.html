@@ -2,10 +2,11 @@
 
 <form id="search">
     <button id="btn_createOrder">+ &nbsp;&nbsp;Create Order</button>
-    <p>
-        <input type="checkbox" id="search_active" checked>
-        <label for="search_active">Active</label>
-    </p>
+    <select id="search_active">
+        <option value="active" selected="selected">✔️ Active only</option>
+        <option value="inactive">❌ Inactive only</option>
+        <option value="all">   All orders</option>
+    </select>
     <input type="text" placeholder="Multi column search" id="search_value"  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <input type="submit" value="Search 🔎">
 </form>
@@ -20,6 +21,7 @@
                 <th>Title</th>
                 <th style="width: 60px">Status</th>
                 <th style="width: 170px">Last update</th>
+                <th style="width: 80px">Actions</th>
                 <th style="width: 60px"></th>
             </tr>
         </thead>
@@ -30,22 +32,19 @@
 <template id="order_modal">
     <p class="title"></p>
     <hr>
-    <p>
-        <input type="checkbox" id="order_active" checked>
-        <label for="order_active">Active</label>
-    </p>
+    <section class="order_state">
+        <label for="order_active">Order status</label>
+        <select id="order_active">
+            <option value="true" selected="selected">✔️ Enabled</option>
+            <option value="false">❌ Disabled</option>
+        </select>
+    </section>
     <span id="modal_error"></span>
     <table>
-        <thead>
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-        </thead>
         <tbody id="attr"></tbody>
     </table>
     <hr>
-    <button id="btn_order_save">Save</button>
+    <button id="btn_order_save" disabled>Save</button>
 </template>
 
 <template id="order_create_modal">

@@ -50,11 +50,14 @@ function filterTableByActive(active, tdRow = 2) {
         }
 
         const txtValue = td.textContent || td.innerText;
-        if (active) {
+        if (active === null) {
+            tr[id].style.display = "";
+        }
+        else if (active) {
             tr[id].style.display = txtValue === "✔️" ? "" : "none";
         }
         else {
-            tr[id].style.display = "";
+            tr[id].style.display = txtValue === "❌" ? "" : "none";
         }
     }
 }
@@ -70,6 +73,7 @@ function createGroup(inputs) {
 }
 
 function createMaterialInput(label, options = {}) {
+    const { helpers } = options;
     const groupElement = document.createElement("section");
     groupElement.classList.add("form_group");
 
@@ -83,6 +87,15 @@ function createMaterialInput(label, options = {}) {
     inputElement.required = true;
     labelElement.appendChild(document.createTextNode(label));
 
+    if (typeof helpers === "string") {
+        const span = document.createElement("span");
+        span.textContent = "?";
+        const pElement = document.createElement("p");
+        pElement.textContent = helpers;
+        span.appendChild(pElement);
+        groupElement.appendChild(span);
+    }
+
     groupElement.appendChild(inputElement);
     groupElement.appendChild(labelElement);
 
@@ -91,13 +104,17 @@ function createMaterialInput(label, options = {}) {
 
 function createInputTd(id, text = "") {
     const tdElement = document.createElement("td");
+    tdElement.classList.add("input_td");
     const inputElement = document.createElement("input");
     inputElement.type = "text";
     inputElement.id = id;
     inputElement.classList.add("modal_input");
+    inputElement.setAttribute("autocomplete", "off");
+    inputElement.setAttribute("autocorrect", "off");
+    inputElement.setAttribute("autocapitalize", "off");
+    inputElement.setAttribute("spellcheck", "off");
     inputElement.value = text;
 
-    tdElement.style.backgroundColor = "#ECEFF1";
     tdElement.appendChild(inputElement);
 
     return tdElement;
