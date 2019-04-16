@@ -143,6 +143,35 @@ function formatDate(date) {
     return `${day}/${month}/${date.getUTCFullYear()}`;
 }
 
+function scheduleElement(scheduleStr) {
+    const fragment = document.createDocumentFragment();
+    const pDiv = document.createElement("div");
+    pDiv.classList.add("schedule-parent");
+    const groups = scheduleStr.split(";");
+
+    for (const group of groups) {
+        const times = group.slice(2).split("-");
+
+        const cDiv = document.createElement("div");
+        cDiv.classList.add("schedule-child");
+
+        const titleEl = document.createElement("b");
+        titleEl.appendChild(document.createTextNode(group.charAt(0)));
+        cDiv.appendChild(titleEl);
+        for (const time of times) {
+            const [partOne, partTwo] = time.split(":");
+            const span = document.createElement("span");
+            span.textContent = `${partOne.slice(0, 2)}-${partTwo.slice(0, 2)}`;
+            cDiv.appendChild(span);
+        }
+
+        pDiv.appendChild(cDiv);
+    }
+    fragment.appendChild(pDiv);
+
+    return fragment;
+}
+
 /**
  * @class DynamicTable
  */
@@ -175,7 +204,10 @@ class DynamicTable {
         const tr = document.createElement("tr");
         for (const elem of elements) {
             const tdElement = document.createElement("td");
-            if (typeof elem === "object" && elem !== null) {
+            if (elem instanceof DocumentFragment) {
+                tdElement.appendChild(elem);
+            }
+            else if (typeof elem === "object" && elem !== null) {
                 if (elem.center) {
                     tdElement.classList.add("center");
                 }

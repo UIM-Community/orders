@@ -68,15 +68,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const _t = new DynamicTable("action_table");
             for (const { type, schedule, arguments: args } of condition.json) {
-                const reSchedule = schedule.slice(0, 50);
                 _t.addRow([
                     type,
-                    reSchedule,
+                    scheduleElement(schedule),
                     { value: args.template, center: false },
                     { value: "✏️", center: true },
                     { value: "❌", center: true }
                 ]);
             }
+
+            const btnSectionTop = document.createElement("section");
+            btnSectionTop.classList.add("btn_section");
+
+            const btnAddAction = document.createElement("button");
+            btnAddAction.textContent = "Add Action";
+            btnSectionTop.appendChild(btnAddAction);
 
             const btnSection = document.createElement("section");
             btnSection.classList.add("btn_section");
@@ -90,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btnDelete.classList.add("del");
             btnDelete.textContent = "Delete Condition ";
 
+            clone.appendChild(btnSectionTop);
             clone.appendChild(_t.close());
             clone.appendChild(document.createElement("hr"));
             btnSection.appendChild(btnSave);

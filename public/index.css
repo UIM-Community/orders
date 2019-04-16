@@ -348,9 +348,16 @@ summary {
         color: #512DA8;
     }
 
+    details hr {
+        border: none;
+        height: 1px;
+        background: #EEE;
+        margin: 5px 4px;
+    }
     details .btn_section {
         display: flex;
         justify-content: right;
+        margin: 0 4px;
     }
     details button + button {
         margin-left: 10px;
@@ -552,3 +559,25 @@ table {
         table > tbody tr td.center {
             text-align: center;
         }
+
+div.schedule-parent {
+    display: flex;
+    align-items: center;
+}
+    div.schedule-child {
+        background: #212121;
+        color: #FFF;
+        border-radius: 4px;
+        padding: 0 5px;
+        font-size: 13px;
+    }
+    div.schedule-child + div.schedule-child {
+        margin-left: 5px;
+    }
+    div.schedule-child > b {
+        margin-right: 5px;
+        color: orange;
+    }
+    div.schedule-child > span + span {
+        margin-left: 5px;
+    }
