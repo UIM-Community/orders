@@ -73,16 +73,28 @@ document.addEventListener("DOMContentLoaded", () => {
                     type,
                     reSchedule,
                     { value: args.template, center: false },
-                    { value: "✏️", center: true }
+                    { value: "✏️", center: true },
+                    { value: "❌", center: true }
                 ]);
             }
-            clone.appendChild(_t.close());
 
-            clone.appendChild(document.createElement("hr"));
+            const btnSection = document.createElement("section");
+            btnSection.classList.add("btn_section");
+
             const btnSave = document.createElement("button");
             btnSave.disabled = true;
+            btnSave.style.marginLeft = "auto";
             btnSave.textContent = "Save";
-            clone.appendChild(btnSave);
+
+            const btnDelete = document.createElement("button");
+            btnDelete.classList.add("del");
+            btnDelete.textContent = "Delete Condition ";
+
+            clone.appendChild(_t.close());
+            clone.appendChild(document.createElement("hr"));
+            btnSection.appendChild(btnSave);
+            btnSection.appendChild(btnDelete);
+            clone.appendChild(btnSection);
 
             details.appendChild(clone);
             fragment.appendChild(details);

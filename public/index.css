@@ -290,6 +290,21 @@ fieldset {
         color: #607D8B;
     }
 
+section#action_bar {
+    display: flex;
+}
+    section#action_bar > p.action_title {
+        background: #607D8B;
+        padding: 0 20px;
+        border-radius: 2px;
+        color: #FFF;
+        display: flex;
+        align-items: center;
+    }
+    section#action_bar > button {
+        margin-left: auto;
+    }
+
 section#action_groups {
     display: flex;
     flex-direction: column;
@@ -331,6 +346,14 @@ summary {
     summary:hover {
         cursor: pointer;
         color: #512DA8;
+    }
+
+    details .btn_section {
+        display: flex;
+        justify-content: right;
+    }
+    details button + button {
+        margin-left: 10px;
     }
 
 section.condition_line {
