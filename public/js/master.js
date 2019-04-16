@@ -354,9 +354,10 @@ document.addEventListener("DOMContentLoaded", () => {
     menuAction.addEventListener("click", async() => {
         openModal("modal_action", (clone) => {
             const formAction = clone.getElementById("action_form");
+            const formSection = clone.getElementById("action_form_content");
 
             const inputGroup = createMaterialInput("Number");
-            formAction.appendChild(inputGroup);
+            formSection.appendChild(inputGroup);
             const submit = document.createElement("input");
             submit.setAttribute("type", "submit");
             submit.value = "Find";
@@ -377,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            formAction.appendChild(submit);
+            formSection.appendChild(submit);
         });
     });
 

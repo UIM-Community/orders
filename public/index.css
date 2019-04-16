@@ -296,6 +296,14 @@ section#action_groups {
     margin-top: 35px;
     border-radius: 2px;
 }
+section#action_form_content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+    section#action_form_content input[type="text"] {
+        width: 210px !important;
+    }
 
 details {
     border: 1px solid #607D8B;

@@ -10,7 +10,7 @@ const { qWrap } = require("./src/utils");
 const PORT = process.env.port || 1337;
 
 async function main() {
-    httpServer.listen(PORT, () => console.log(`Http server now listening on port: ${PORT}`));
+    httpServer.listen(PORT, () => console.log(`HTTP Server started at: ${`http://localhost:${PORT}`}`));
 
     const sess = await getSession();
     const tOrders = sess.getTable("cmdb_order");
