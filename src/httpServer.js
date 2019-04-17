@@ -251,14 +251,14 @@ httpServer.get("/order/:orderId/condition", async(req, res) => {
 
     const sess = await getSession();
     const rows = await qWrap(sess.getTable("cmdb_order_action_list")
-        .select(["bu_id", "trigram", "condition", "token", "time_shift", "json"])
+        .select(["id", "bu_id", "trigram", "condition", "token", "time_shift", "json"])
         .where("order_id = :id")
         .bind("id", orderId)
     );
 
     // eslint-disable-next-line
-    const filtered = rows.map(([bu_id, trigram, condition, token, time_shift, json]) => {
-        return { bu_id, trigram, condition, token, time_shift, json };
+    const filtered = rows.map(([id, bu_id, trigram, condition, token, time_shift, json]) => {
+        return { id, bu_id, trigram, condition, token, time_shift, json };
     });
 
     send(res, 200, filtered);
@@ -272,10 +272,10 @@ httpServer.post("/order/:orderId/condition", async(req, res) => {
         return send(res, 400, err[0].message);
     }
     const orderId = req.params.orderId;
-    const { buId, token, timeShift, json } = req.body;
+    const { buTrigram, token, timeShift } = req.body;
 
     const sess = await getSession();
-    const [row = null] = await qWrap(
+    const [condition = null] = await qWrap(
         sess.getTable("cmdb_order_action_list")
             .select(["condition"])
             .where("order_id = :id")
@@ -283,11 +283,18 @@ httpServer.post("/order/:orderId/condition", async(req, res) => {
             .orderBy("condition desc")
             .limit(1)
     );
+    const conditionNumber = condition === null ? 0 : condition[0] + 1;
 
-    const conditionNumber = row === null ? 0 : row[0] + 1;
+    const [row = null] = await qWrap(
+        sess.getTable("cmdb_bu").select(["id"]).where("trigram = :trigram").bind("trigram", buTrigram)
+    );
+    if (row === null) {
+        return send(res, 500, `Unable to found Business Unit with trigram '${buTrigram}'`);
+    }
+
     const qRet = await sess.getTable("cmdb_order_action")
         .insert(["order_id", "bu_id", "condition", "token", "time_shift", "json"])
-        .values([orderId, buId, conditionNumber, token, timeShift, json])
+        .values([orderId, row[0], conditionNumber, token, timeShift, "[]"])
         .execute();
 
     if (qRet.getAffectedItemsCount() !== 1) {

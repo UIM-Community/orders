@@ -73,7 +73,7 @@ function createGroup(inputs) {
 }
 
 function createMaterialInput(label, options = {}) {
-    const { helpers } = options;
+    const { helpers, defaultValue } = options;
     const groupElement = document.createElement("section");
     groupElement.classList.add("form_group");
 
@@ -85,6 +85,9 @@ function createMaterialInput(label, options = {}) {
     inputElement.setAttribute("autocapitalize", "off");
     inputElement.setAttribute("spellcheck", "off");
     inputElement.required = true;
+    if (typeof defaultValue === "string") {
+        inputElement.value = defaultValue;
+    }
     labelElement.appendChild(document.createTextNode(label));
 
     if (typeof helpers === "string") {

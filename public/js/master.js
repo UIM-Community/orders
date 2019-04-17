@@ -45,11 +45,54 @@ document.addEventListener("DOMContentLoaded", () => {
         const html = await fetch("/view/action").then((res) => res.text());
         aside.innerHTML = html;
 
+        document.getElementById("btn_createConditon").addEventListener("click", () => {
+            openModal("condition_create", (clone) => {
+                const form = clone.querySelector("form");
+                const group = createGroup([
+                    createMaterialInput("Application Name (Trigram)"),
+                    createMaterialInput("Time Shift")
+                ]);
+                form.appendChild(group);
+                form.appendChild(createMaterialInput("Token (Regex)", { defaultValue: ".*" }));
+
+                const inputSubmit = document.createElement("input");
+                inputSubmit.type = "submit";
+                inputSubmit.value = "Create";
+                form.appendChild(inputSubmit);
+
+                const inputs = clone.querySelectorAll("input");
+                form.addEventListener("submit", async(event) => {
+                    event.preventDefault();
+                    const [trigram, tShift, token] = inputs;
+                    const body = {
+                        buTrigram: trigram.value,
+                        token: btoa(token.value),
+                        timeShift: tShift.value
+                    };
+
+                    const raw = await fetch(`order/${id}/condition`, {
+                        method: "POST",
+                        headers,
+                        body: JSON.stringify(body)
+                    });
+                    if (raw.status === 201) {
+                        document.getElementById("modal_close").click();
+                        window.location.reload(false);
+                    }
+                    else {
+                        const spanEl = document.getElementById("modal_error");
+                        spanEl.textContent = await raw.text();
+                        spanEl.style.display = "flex";
+                    }
+                });
+            });
+        });
+
         const title = document.querySelector(".action_title");
         title.textContent = `Order Number: ${number}`;
 
         const actionElement = document.getElementById("action_groups");
-        const conditions = await fetch(`order/${id}/action`).then((res) => res.json());
+        const conditions = await fetch(`order/${id}/condition`).then((res) => res.json());
         const template = document.getElementById("condition");
 
         const fragment = document.createDocumentFragment();
@@ -95,6 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnDelete = document.createElement("button");
             btnDelete.classList.add("del");
             btnDelete.textContent = "Delete Condition ";
+            btnDelete.addEventListener("click", async() => {
+                const cDel = confirm(`Are you sure to delete condition id ${condition.condition}`);
+                if (cDel) {
+                    await fetch(`order/${condition.id}/condition`, {
+                        method: "DELETE",
+                        headers
+                    });
+                    window.location.reload(false);
+                }
+            });
 
             clone.appendChild(btnSectionTop);
             clone.appendChild(_t.close());

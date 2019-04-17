@@ -2,7 +2,7 @@
 
 <section id="action_bar">
     <p class="action_title"></p>
-    <button>+  Create Condition</button>
+    <button id="btn_createConditon"><span class="bull">+</span>  Create Condition</button>
 </section>
 
 <section id="action_groups"></section>
@@ -24,4 +24,12 @@
         </thead>
         <tbody></tbody>
     </table>
+</template>
+
+<template id="condition_create">
+    <p class="title">Create Condition</p>
+    <hr>
+    <form>
+        <span id="modal_error" style="margin-bottom: 15px"></span>
+    </form>
 </template>

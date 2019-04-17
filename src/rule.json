@@ -10,9 +10,8 @@
         "attr.information": "string|max:255"
     },
     "condition": {
-        "buId": "required|integer",
+        "buTrigram": "required|string|max:3",
         "token": "required|string",
-        "timeShift": "required|string",
-        "json": "required|json"
+        "timeShift": "required|string"
     }
 }
