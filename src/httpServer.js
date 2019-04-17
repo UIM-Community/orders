@@ -304,6 +304,44 @@ httpServer.post("/order/:orderId/condition", async(req, res) => {
     return send(res, 201, null);
 });
 
+httpServer.patch("/order/:id/condition", async(req, res) => {
+    try {
+        await validate(req.body, rule.condition);
+    }
+    catch (err) {
+        return send(res, 400, err[0].message);
+    }
+
+    const { buTrigram, token, timeShift } = req.body;
+    const id = req.params.id;
+    if (isNaN(Number(id))) {
+        return send(res, 400, "id must be a number");
+    }
+
+    const sess = await getSession();
+    const [row = null] = await qWrap(
+        sess.getTable("cmdb_bu").select(["id"]).where("trigram = :trigram").bind("trigram", buTrigram)
+    );
+    if (row === null) {
+        return send(res, 500, `Unable to found Business Unit with trigram '${buTrigram}'`);
+    }
+
+    const qRet = await sess.getTable("cmdb_order_action")
+        .update()
+        .set("bu_id", row[0])
+        .set("token", token)
+        .set("time_shift", timeShift)
+        .where("id = :id")
+        .bind("id", id)
+        .execute();
+
+    if (qRet.getAffectedItemsCount() !== 1) {
+        return send(res, 500, `Unable to update condition with id ${id}`);
+    }
+
+    return send(res, 200, null);
+});
+
 httpServer.delete("/order/:id/condition", async(req, res) => {
     const id = req.params.id;
     if (isNaN(Number(id))) {

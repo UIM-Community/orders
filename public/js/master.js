@@ -125,7 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnSectionTop = document.createElement("section");
             btnSectionTop.classList.add("btn_section");
 
-            const btnAddAction = createButton("Add Action", { icon: "➕" });
+            const btnAddAction = createButton("Add Action", { icon: "+" });
+            btnAddAction.addEventListener("click", () => {
+                console.log("Add action!");
+            });
             btnSectionTop.appendChild(btnAddAction);
 
             const btnSection = document.createElement("section");
@@ -141,11 +144,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
             btnSave.style.marginLeft = "auto";
-            btnSave.addEventListener("click", () => {
-                console.log("update condition here!");
+            btnSave.addEventListener("click", async() => {
+                const [trigram, token, timeShift] = inputs;
+                const body = {
+                    buTrigram: trigram.value,
+                    token: btoa(token.value),
+                    timeShift: timeShift.value
+                };
+
+                const raw = await fetch(`order/${condition.id}/condition`, {
+                    method: "PATCH",
+                    headers,
+                    body: JSON.stringify(body)
+                });
+                if (raw.status === 200) {
+                    btnSave.disabled = true;
+                }
+                else {
+                    alert(await raw.text());
+                }
             });
 
-            const btnDelete = createButton("Delete Condition", { icon: "❌", del: true });
+            const btnDelete = createButton("Delete Condition", { del: true });
             btnDelete.addEventListener("click", async() => {
                 const cDel = confirm(`Are you sure to delete condition id ${condition.condition}`);
                 if (cDel) {
