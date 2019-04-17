@@ -103,9 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const line = clone.querySelector(".double_group");
             const trigramGroup = createMaterialInput("Application Trigram");
             const tokenGroup = createMaterialInput("Regex ( Token )");
+            const timeGroup = createMaterialInput("Time Shift");
 
             trigramGroup.childNodes[0].value = condition.trigram;
             tokenGroup.childNodes[0].value = atob(condition.token);
+            timeGroup.childNodes[0].value = condition.time_shift;
             line.appendChild(trigramGroup);
             line.appendChild(tokenGroup);
 
@@ -123,21 +125,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnSectionTop = document.createElement("section");
             btnSectionTop.classList.add("btn_section");
 
-            const btnAddAction = document.createElement("button");
-            btnAddAction.textContent = "Add Action";
+            const btnAddAction = createButton("Add Action", { icon: "➕" });
             btnSectionTop.appendChild(btnAddAction);
 
             const btnSection = document.createElement("section");
             btnSection.classList.add("btn_section");
 
-            const btnSave = document.createElement("button");
-            btnSave.disabled = true;
+            const btnSave = createButton("Save", { disabled: true });
+            const inputs = [trigramGroup.childNodes[0], tokenGroup.childNodes[0], timeGroup.childNodes[0]];
+            for (const input of inputs) {
+                input.addEventListener("keypress", () => {
+                    if (btnSave.disabled) {
+                        btnSave.disabled = false;
+                    }
+                });
+            }
             btnSave.style.marginLeft = "auto";
-            btnSave.textContent = "Save";
+            btnSave.addEventListener("click", () => {
+                console.log("update condition here!");
+            });
 
-            const btnDelete = document.createElement("button");
-            btnDelete.classList.add("del");
-            btnDelete.textContent = "Delete Condition ";
+            const btnDelete = createButton("Delete Condition", { icon: "❌", del: true });
             btnDelete.addEventListener("click", async() => {
                 const cDel = confirm(`Are you sure to delete condition id ${condition.condition}`);
                 if (cDel) {
@@ -149,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
+            clone.appendChild(timeGroup);
             clone.appendChild(btnSectionTop);
             clone.appendChild(_t.close());
             clone.appendChild(document.createElement("hr"));

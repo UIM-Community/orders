@@ -72,6 +72,25 @@ function createGroup(inputs) {
     return group;
 }
 
+function createButton(name = "", options = {}) {
+    const btn = document.createElement("button");
+    if (options.disabled) {
+        btn.disabled = true;
+    }
+    if (options.del) {
+        btn.classList.add("del");
+    }
+    if (typeof options.icon === "string") {
+        const span = document.createElement("span");
+        span.classList.add("bull");
+        span.appendChild(document.createTextNode(options.icon));
+        btn.appendChild(span);
+    }
+    btn.appendChild(document.createTextNode(name));
+
+    return btn;
+}
+
 function createMaterialInput(label, options = {}) {
     const { helpers, defaultValue } = options;
     const groupElement = document.createElement("section");
