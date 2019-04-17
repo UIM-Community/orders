@@ -36,7 +36,11 @@ const HTMLMainPage = readFileSync(join(VIEW_DIR, "index.html"), { encoding: "utf
 const assets = sirv("public", {
     dev: true
 });
-const httpServer = polka();
+const httpServer = polka({
+    onError(err, req, res) {
+        return send(res, 500, err.message);
+    }
+});
 httpServer.use(compress, assets);
 httpServer.use(bodyParser.json());
 

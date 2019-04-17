@@ -127,7 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const btnAddAction = createButton("Add Action", { icon: "+" });
             btnAddAction.addEventListener("click", () => {
-                console.log("Add action!");
+                openModal("action_create", (clone) => {
+                    const form = clone.querySelector("form");
+
+                    const submit = createButton("Create", { disabled: true });
+                    form.appendChild(document.createElement("br"));
+                    form.appendChild(submit);
+                });
             });
             btnSectionTop.appendChild(btnAddAction);
 

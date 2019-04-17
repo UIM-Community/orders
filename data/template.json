@@ -1,0 +1,190 @@
+{
+    "templates": {
+        "api": {
+            "servicenow": {
+                "name": "ServiceNow",
+                "description": "Open a ServiceNow Incident",
+                "fields": {
+                    "cmdb_ci": {
+                        "type": "string",
+                        "enable": "true",
+                        "name": "Business Application name (CMDB)"
+                    },
+                    "assigment_group": {
+                        "type": "string",
+                        "enable": "true",
+                        "name": "Assignment Group"
+                    }
+                }
+            }
+        },
+        "mail": {
+            "alarm": {
+                "name": "Alarm by email",
+                "description": "Send an alarm by Email",
+                "fields": {
+                    "to": {
+                        "type": "string",
+                        "enable": "true",
+                        "name": "Blind Carbon Copy"
+                    },
+                    "cc": {
+                        "type": "string",
+                        "enable": "true",
+                        "name": "Carbon Copy"
+                    },
+                    "bcc": {
+                        "type": "string",
+                        "enable": "true",
+                        "name": "Blind Carbon Copy"
+                    }
+                }
+            }
+        },
+        "alarm":{
+            "pilotage": {
+                "name": "Command Center",
+                "description": "Send an alarm to the Command Center",
+                "fields": {
+                    "Message": {
+                        "type": "string",
+                        "enable": "false",
+                        "name": "Automatically generated"
+                    }
+                }
+            }
+        },
+        "snmp":{
+            "logncall": {
+                "name": "Log and Call",
+                "description": "Call a specific technical support",
+                "fields": {
+                    "Team": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Technical support Team"
+                    }
+                }
+            }
+        },
+        "nimsoft":{
+            "default": {
+                "name": "RAW",
+                "description": "Specific Nimbus Request",
+                "fields": {
+                    "hub": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Nimsoft concentrator name (Uppercase)"
+                    },
+                    "robot": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Server or Agent name (Lowercase)"
+                    },
+                    "probe": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Probe name (Lowercase)"
+                    },
+                    "callback": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Call-Back"
+                    },
+                    "pds": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "PDS (Perl Hash Format)"
+                    }
+                }
+            },
+            "cmd": {
+                "name": "MS-DOS",
+                "description": "Run a CMD command",
+                "fields": {
+                    "server": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Server name"
+                    },
+                    "command": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Command"
+                    }
+                }
+            },
+            "powershell": {
+                "name": "Powershell",
+                "description": "Run a PowerShell command",
+                "fields": {
+                    "server": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Server name"
+                    },
+                    "command": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Command"
+                    }
+                }
+            },
+            "shell": {
+                "name": "Shell",
+                "description": "Run a Shell command",
+                "fields": {
+                    "server": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Server name"
+                    },
+                    "command": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Command"
+                    }
+                }
+            },
+            "bash": {
+                "name": "Bash",
+                "description": "Run a Bash command",
+                "fields": {
+                    "server": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Server name"
+                    },
+                    "command": {
+                        "type": "string",
+                        "enable": "enable",
+                        "name": "Command"
+                    }
+                }
+            }
+        }
+    },
+    "types": {
+        "api": {
+            "name": "Web API Rest",
+            "description": "Appel d'un Webservice REST (JSON)"
+        },
+        "mail": {
+            "name": "Email (SMTP)",
+            "description": "Envoie d'un email pré-formaté"
+        },
+        "alarm": {
+            "name": "Nimsoft Alarm",
+            "description": "Send an alarm to the Command Center"
+        },
+        "snmp": {
+            "name": "Trap (SNMP)",
+            "description": "Send a SNMP Trap message"
+        },
+        "nimsoft": {
+            "name": "Nimbus Request",
+            "description": "Run a Nimbus Request (Nimsoft Agents)"
+        }
+    }
+}
