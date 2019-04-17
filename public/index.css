@@ -27,6 +27,10 @@ body {
     font-family: Roboto;
 }
 
+select:disabled {
+    opacity: 0.5;
+}
+
 span.bull {
     width: 20px;
     height: 20px;
@@ -38,6 +42,38 @@ span.bull {
     align-items: center;
     font-size: 14px;
     justify-content: center;
+}
+
+#action_template_content {
+    border-color: #607D8B;
+}
+#action_template_content > p {
+    text-align: center;
+    padding: 5px;
+}
+    #action_template_content > p b {
+        color: #1A237E;
+    }
+
+section.select_group {
+    display: flex;
+    flex-grow: 1;
+    height: 35px;
+    flex-basis: 250px;
+    margin-bottom: 10px;
+}
+    section.select_group > label {
+        min-width: 80px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+    section.select_group > select {
+        flex-grow: 1;
+    }
+
+section.select_group + section.select_group {
+    margin-left: 20px;
 }
 
 section.order_state {

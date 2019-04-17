@@ -72,6 +72,24 @@ function createGroup(inputs) {
     return group;
 }
 
+function createOptions(elements) {
+    const fragment = document.createDocumentFragment();
+    const selected = document.createElement("option");
+    selected.value = "none";
+    selected.textContent = "None ( Please select )";
+    selected.selected = true;
+    fragment.appendChild(selected);
+
+    for (const [key, value] of Object.entries(elements)) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = value.name;
+        fragment.appendChild(option);
+    }
+
+    return fragment;
+}
+
 function createButton(name = "", options = {}) {
     const btn = document.createElement("button");
     if (options.disabled) {

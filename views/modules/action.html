@@ -38,12 +38,27 @@
     <p class="title">Create Action</p>
     <hr>
     <form>
-        <section class="double_group">
-            <label for="action_type">Type</label>
-            <select id="action_type">
-                <option value="snmp" selected="selected">snmp</option>
-                <option value="api">api</option>
-            </select>
+        <section class="double_group" style="margin: 0 4px">
+            <section class="select_group">
+                <label for="action_type">Type</label>
+                <select id="action_type">
+                    <option value="none" selected="selected">None ( Please select )</option>
+                    <option value="snmp">Trap (SNMP)</option>
+                    <option value="api">Web API Rest</option>
+                    <option value="mail">Email (SMTP)</option>
+                    <option value="alarm">Nimsoft Alarm</option>
+                    <option value="nimsoft">Nimbus Request</option>
+                </select>
+            </section>
+            <section class="select_group">
+                <label for="action_template">Template</label>
+                <select id="action_template" disabled>
+                </select>
+            </section>
         </section>
+        <fieldset id="action_template_content">
+            <legend>Arguments</legend>
+            <p>Please select a <b>Type</b> and a <b>Template</b></p>
+        </fieldset>
     </form>
 </template>

@@ -1,4 +1,53 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const ActionTemplate = {
+        api: {
+            servicenow: {
+                name: "ServiceNow",
+                description: "Open a ServiceNow Incident"
+            }
+        },
+        mail: {
+            alarm: {
+                name: "Alarm by email",
+                description: "Send an alarm by Email"
+            }
+        },
+        alarm: {
+            pilotage: {
+                name: "Command Center",
+                description: "Send an alarm to the Command Center"
+            }
+        },
+        snmp: {
+            logncall: {
+                name: "Log and Call",
+                description: "Call a specific technical support"
+            }
+        },
+        nimsoft: {
+            default: {
+                name: "RAW",
+                description: "Specific Nimbus Request"
+            },
+            cmd: {
+                name: "MS-DOS",
+                description: "Run a CMD command"
+            },
+            powershell: {
+                name: "Powershell",
+                description: "Run a PowerShell command"
+            },
+            shell: {
+                name: "Shell",
+                description: "Run a Shell command"
+            },
+            bash: {
+                name: "Bash",
+                description: "Run a Bash command"
+            }
+        }
+    };
+
     const headers = {
         Accept: "application/json",
         "Content-Type": "application/json"
@@ -111,26 +160,46 @@ document.addEventListener("DOMContentLoaded", () => {
             line.appendChild(trigramGroup);
             line.appendChild(tokenGroup);
 
-            const _t = new DynamicTable("action_table");
-            for (const { type, schedule, arguments: args } of condition.json) {
-                _t.addRow([
-                    type,
-                    scheduleElement(schedule),
-                    { value: args.template, center: false },
-                    { value: "✏️", center: true },
-                    { value: "❌", center: true }
-                ]);
-            }
-
             const btnSectionTop = document.createElement("section");
             btnSectionTop.classList.add("btn_section");
 
             const btnAddAction = createButton("Add Action", { icon: "+" });
+            btnAddAction.style.height = "35px";
             btnAddAction.addEventListener("click", () => {
                 openModal("action_create", (clone) => {
                     const form = clone.querySelector("form");
 
+                    const templateContent = clone.getElementById("action_template_content");
+                    const actionType = clone.getElementById("action_type");
+                    const actionTemplate = clone.getElementById("action_template");
+
+                    actionType.addEventListener("change", (event) => {
+                        const value = event.target.options[event.target.selectedIndex].value;
+                        actionTemplate.innerHTML = "";
+                        if (value === "none") {
+                            actionTemplate.disabled = true;
+                        }
+                        else {
+                            actionTemplate.disabled = false;
+                            const options = createOptions(ActionTemplate[value]);
+                            actionTemplate.appendChild(options);
+                        }
+                    });
+
+                    actionTemplate.addEventListener("change", (event) => {
+                        const type = actionType.options[actionType.selectedIndex].value;
+                        if (type === "none") {
+                            return;
+                        }
+
+                        const value = event.target.options[event.target.selectedIndex].value;
+                        console.log(value);
+                    });
+
                     const submit = createButton("Create", { disabled: true });
+                    const scheduleGroup = createMaterialInput("Schedule");
+                    form.insertBefore(scheduleGroup, templateContent);
+
                     form.appendChild(document.createElement("br"));
                     form.appendChild(submit);
                 });
@@ -185,6 +254,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             clone.appendChild(timeGroup);
             clone.appendChild(btnSectionTop);
+
+            const _t = new DynamicTable("action_table");
+            for (const { type, schedule, arguments: args } of condition.json) {
+                _t.addRow([
+                    type,
+                    scheduleElement(schedule),
+                    { value: args.template, center: false },
+                    { value: "✏️", center: true },
+                    { value: "❌", center: true }
+                ]);
+            }
             clone.appendChild(_t.close());
             clone.appendChild(document.createElement("hr"));
             btnSection.appendChild(btnSave);
