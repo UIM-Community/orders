@@ -198,7 +198,6 @@ httpServer.get("/order/:id/attr", async(req, res) => {
     }
 });
 
-// TODO: Implement rfc6902 (JSON Patch)
 httpServer.patch("/order/:id/attr", async(req, res) => {
     try {
         await validate(req.body, {
@@ -247,8 +246,8 @@ httpServer.patch("/order/:id/attr", async(req, res) => {
     return send(res, 200);
 });
 
-httpServer.get("/order/:id/action", async(req, res) => {
-    const orderId = req.params.id;
+httpServer.get("/order/:orderId/condition", async(req, res) => {
+    const orderId = req.params.orderId;
 
     const sess = await getSession();
     const rows = await qWrap(sess.getTable("cmdb_order_action_list")
@@ -257,6 +256,7 @@ httpServer.get("/order/:id/action", async(req, res) => {
         .bind("id", orderId)
     );
 
+    // eslint-disable-next-line
     const filtered = rows.map(([bu_id, trigram, condition, token, time_shift, json]) => {
         return { bu_id, trigram, condition, token, time_shift, json };
     });
@@ -264,23 +264,76 @@ httpServer.get("/order/:id/action", async(req, res) => {
     send(res, 200, filtered);
 });
 
-httpServer.put("/order/:id/action", async(req, res) => {
+httpServer.post("/order/:orderId/condition", async(req, res) => {
     try {
-        await validate(req.body, {
-            bu_id: "required|number",
-            condition: "required|number",
-            json: "required|string"
-        });
+        await validate(req.body, rule.condition);
     }
     catch (err) {
-        console.error(err);
+        return send(res, 400, err[0].message);
+    }
+    const orderId = req.params.orderId;
+    const { buId, token, timeShift, json } = req.body;
 
-        return send(res, 400, err.message);
+    const sess = await getSession();
+    const [row = null] = await qWrap(
+        sess.getTable("cmdb_order_action_list")
+            .select(["condition"])
+            .where("order_id = :id")
+            .bind("id", orderId)
+            .orderBy("condition desc")
+            .limit(1)
+    );
+
+    const conditionNumber = row === null ? 0 : row[0] + 1;
+    const qRet = await sess.getTable("cmdb_order_action")
+        .insert(["order_id", "bu_id", "condition", "token", "time_shift", "json"])
+        .values([orderId, buId, conditionNumber, token, timeShift, json])
+        .execute();
+
+    if (qRet.getAffectedItemsCount() !== 1) {
+        return send(res, 500, "Unable to insert new condition");
     }
 
-    const orderId = req.params.id;
-
-    return send(res, 200);
+    return send(res, 201, null);
 });
+
+httpServer.delete("/order/:id/condition", async(req, res) => {
+    const id = req.params.id;
+    if (isNaN(Number(id))) {
+        return send(res, 400, "id must be a number");
+    }
+
+    const sess = await getSession();
+    const qRet = await sess.getTable("cmdb_order_action")
+        .delete()
+        .where("id = :id")
+        .bind("id", id)
+        .execute();
+
+    if (qRet.getAffectedItemsCount() !== 1) {
+        return send(res, 500, `Unable to delete condition with id ${id}`);
+    }
+
+    return send(res, 200, null);
+});
+
+// httpServer.put("/order/:id/action", async(req, res) => {
+//     try {
+//         await validate(req.body, {
+//             bu_id: "required|number",
+//             condition: "required|number",
+//             json: "required|string"
+//         });
+//     }
+//     catch (err) {
+//         console.error(err);
+
+//         return send(res, 400, err.message);
+//     }
+
+//     const orderId = req.params.id;
+
+//     return send(res, 200);
+// });
 
 module.exports = httpServer;

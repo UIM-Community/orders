@@ -8,5 +8,11 @@
         "attr.servicenow": "string|max:255",
         "attr.mail": "email",
         "attr.information": "string|max:255"
+    },
+    "condition": {
+        "buId": "required|integer",
+        "token": "required|string",
+        "timeShift": "required|string",
+        "json": "required|json"
     }
 }
