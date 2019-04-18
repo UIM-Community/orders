@@ -29,7 +29,6 @@ const DEFAULT_ORDER_ATTR = {
 
 // Globals
 const readAsync = promisify(readFile);
-const HTMLCache = new Map();
 const HTMLMainPage = readFileSync(join(VIEW_DIR, "index.html"), { encoding: "utf8" });
 
 // Create HTTP Server
@@ -54,11 +53,16 @@ httpServer.get("/view/:name", async(req, res) => {
         return send(res, 500, "Invalid template name");
     }
 
-    if (!HTMLCache.has(name)) {
-        const view = await readAsync(join(VIEW_DIR, "modules", `${name}.html`));
-        HTMLCache.set(name, view);
-    }
-    send(res, 200, HTMLCache.get(name), { "Content-Type": "text/html" });
+    const view = await readAsync(join(VIEW_DIR, "modules", `${name}.html`));
+    send(res, 200, view, { "Content-Type": "text/html" });
+});
+
+httpServer.get("/template/:name/:template", async(req, res) => {
+    const { name, template } = req.params;
+    const templateDir = join(VIEW_DIR, "template", name);
+
+    const view = await readAsync(join(templateDir, `${template}.html`));
+    send(res, 200, view, { "Content-Type": "text/html" });
 });
 
 httpServer.get("/", (req, res) => {
@@ -365,24 +369,5 @@ httpServer.delete("/order/:id/condition", async(req, res) => {
 
     return send(res, 200, null);
 });
-
-// httpServer.put("/order/:id/action", async(req, res) => {
-//     try {
-//         await validate(req.body, {
-//             bu_id: "required|number",
-//             condition: "required|number",
-//             json: "required|string"
-//         });
-//     }
-//     catch (err) {
-//         console.error(err);
-
-//         return send(res, 400, err.message);
-//     }
-
-//     const orderId = req.params.id;
-
-//     return send(res, 200);
-// });
 
 module.exports = httpServer;

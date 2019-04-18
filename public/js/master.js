@@ -21,7 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
         snmp: {
             logncall: {
                 name: "Log and Call",
-                description: "Call a specific technical support"
+                description: "Call a specific technical support",
+                extends: {
+                    types: {
+                        9: "OCTET_STRING"
+                    },
+                    oid: {
+                        9: ".10"
+                    }
+                }
             }
         },
         nimsoft: {
@@ -168,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btnAddAction.addEventListener("click", () => {
                 openModal("action_create", (clone) => {
                     const form = clone.querySelector("form");
+                    let activeTemplate = false;
 
                     const templateContent = clone.getElementById("action_template_content");
                     const actionType = clone.getElementById("action_type");
@@ -176,6 +185,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     actionType.addEventListener("change", (event) => {
                         const value = event.target.options[event.target.selectedIndex].value;
                         actionTemplate.innerHTML = "";
+                        templateContent.innerHTML = "<p>Please select a <b>Type</b> and a <b>Template</b></p>";
+                        activeTemplate = false;
+                        submit.disabled = true;
                         if (value === "none") {
                             actionTemplate.disabled = true;
                         }
@@ -186,20 +198,52 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
 
-                    actionTemplate.addEventListener("change", (event) => {
+                    actionTemplate.addEventListener("change", async(event) => {
                         const type = actionType.options[actionType.selectedIndex].value;
                         if (type === "none") {
                             return;
                         }
 
                         const value = event.target.options[event.target.selectedIndex].value;
-                        console.log(value);
+                        if (value === "none") {
+                            templateContent.innerHTML = "<p>Please select a <b>Type</b> and a <b>Template</b></p>";
+                            activeTemplate = false;
+                            submit.disabled = true;
+                        }
+                        else {
+                            const template = await fetch(`template/${type}/${value}`).then((res) => res.text());
+                            templateContent.innerHTML = template;
+                            activeTemplate = true;
+                            submit.disabled = false;
+                        }
                     });
 
                     const submit = createButton("Create", { disabled: true });
                     const scheduleGroup = createMaterialInput("Schedule");
-                    form.insertBefore(scheduleGroup, templateContent);
+                    submit.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        if (!activeTemplate) {
+                            return;
+                        }
 
+                        const action = actionType.options[actionType.selectedIndex].value;
+                        const template = actionTemplate.options[actionTemplate.selectedIndex].value;
+                        const schedule = scheduleGroup.childNodes[0].value;
+                        const currAt = ActionTemplate[action][template];
+                        const json = { action, schedule, arguments: { template } };
+                        if (typeof currAt.extends !== "undefined") {
+                            json.arguments = Object.assign({}, currAt.extends, json.arguments);
+                        }
+
+                        const tInputs = templateContent.querySelectorAll("input");
+                        for (const input of tInputs) {
+                            const path = input.getAttribute("data-path");
+                            setValue(json.arguments, path, input.value);
+                        }
+                        console.log(json);
+                    });
+
+                    form.insertBefore(scheduleGroup, templateContent);
                     form.appendChild(document.createElement("br"));
                     form.appendChild(submit);
                 });

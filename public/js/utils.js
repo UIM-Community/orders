@@ -212,6 +212,22 @@ function scheduleElement(scheduleStr) {
     return fragment;
 }
 
+function setValue(object, path, value) {
+    var a = path.split('.');
+    var o = object;
+    for (let i = 0; i < a.length - 1; i++) {
+        const n = a[i];
+        if (n in o) {
+            o = o[n];
+        }
+        else {
+            o[n] = {};
+            o = o[n];
+        }
+    }
+    o[a[a.length - 1]] = value;
+}
+
 /**
  * @class DynamicTable
  */

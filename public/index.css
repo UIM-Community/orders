@@ -55,6 +55,27 @@ span.bull {
         color: #1A237E;
     }
 
+textarea {
+    border-radius: 2px;
+    padding: 5px;
+    min-height: 80px;
+    max-height: 180px;
+    border-color: #607D8B;
+    color: #607D8B;
+    resize: vertical;
+    outline: none;
+}
+section.textarea_group {
+    display: flex;
+    flex-direction: column;
+}
+    section.textarea_group > label {
+        margin-top: 3px;
+        color: #607D8B;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
 section.select_group {
     display: flex;
     flex-grow: 1;
