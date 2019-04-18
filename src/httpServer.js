@@ -1,7 +1,7 @@
 require("make-promises-safe");
 
 // Require Node.js Dependencies
-const { readFileSync, readFile } = require("fs");
+const { readFileSync, readFile, access } = require("fs");
 const { promisify } = require("util");
 const { join } = require("path");
 
@@ -29,6 +29,7 @@ const DEFAULT_ORDER_ATTR = {
 
 // Globals
 const readAsync = promisify(readFile);
+const accessAsync = promisify(access);
 const HTMLMainPage = readFileSync(join(VIEW_DIR, "index.html"), { encoding: "utf8" });
 
 // Create HTTP Server
@@ -53,16 +54,28 @@ httpServer.get("/view/:name", async(req, res) => {
         return send(res, 500, "Invalid template name");
     }
 
-    const view = await readAsync(join(VIEW_DIR, "modules", `${name}.html`));
-    send(res, 200, view, { "Content-Type": "text/html" });
+    try {
+        const view = await readAsync(join(VIEW_DIR, "modules", `${name}.html`));
+
+        return send(res, 200, view, { "Content-Type": "text/html" });
+    }
+    catch (err) {
+        return send(res, 500, err.message);
+    }
 });
 
 httpServer.get("/template/:name/:template", async(req, res) => {
     const { name, template } = req.params;
-    const templateDir = join(VIEW_DIR, "template", name);
+    try {
+        const templatePath = join(VIEW_DIR, "template", name, `${template}.html`);
+        await accessAsync(templatePath);
+        const view = await readAsync(templatePath);
 
-    const view = await readAsync(join(templateDir, `${template}.html`));
-    send(res, 200, view, { "Content-Type": "text/html" });
+        return send(res, 200, view, { "Content-Type": "text/html" });
+    }
+    catch (err) {
+        return send(res, 500, err.message);
+    }
 });
 
 httpServer.get("/", (req, res) => {
