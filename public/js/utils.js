@@ -228,6 +228,15 @@ function setValue(object, path, value) {
     o[a[a.length - 1]] = value;
 }
 
+function getValue(obj, path) {
+    const pathArr = path.split(".");
+    for (let id = 0; id < pathArr.length; id++) {
+        obj = obj[pathArr[id]];
+    }
+
+    return obj;
+}
+
 /**
  * @class DynamicTable
  */

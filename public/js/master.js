@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const btnDelete = createButton("Delete Condition", { del: true });
             btnDelete.addEventListener("click", async() => {
-                const cDel = confirm(`Are you sure to delete condition id ${condition.condition}`);
+                const cDel = confirm(`Are you sure to delete the condition with id ${condition.condition} ?`);
                 if (cDel) {
                     await fetch(`order/${condition.id}/condition`, {
                         method: "DELETE",
@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const { type, schedule, arguments: args } = condition.json[id];
                 let currTr;
                 async function deleteClick() {
-                    const ret = confirm("Are you sure to delete this action ?");
+                    const ret = confirm("Are you sure to delete this action?");
                     if (!ret) {
                         return;
                     }
@@ -357,11 +357,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     tbody.removeChild(currTr);
                 }
 
+                async function editClick() {
+                    openModal("action_update", async(clone) => {
+                        // update here!
+                        const templateContent = clone.getElementById("action_template_content");
+                        const inputSchedule = clone.getElementById("input_schedule");
+                        inputSchedule.value = schedule;
+
+                        const template = await fetch(`template/${type}/${args.template}`).then((res) => res.text());
+                        templateContent.innerHTML = template;
+
+                        const inputs = templateContent.querySelectorAll(".tpl_input");
+                        for (const input of inputs) {
+                            try {
+                                const path = input.getAttribute("data-path");
+                                input.value = getValue(condition.json[id].arguments, path);
+                            }
+                            catch (err) {
+                                alert(err.message);
+                            }
+                        }
+                    });
+                }
+
                 currTr = _t.addRow([
                     type,
                     schedule === "" ? "" : scheduleElement(schedule),
                     { value: args.template, center: false },
-                    { value: "✏️", center: true },
+                    { value: "✏️", center: true, click: editClick },
                     { value: "❌", center: true, click: deleteClick }
                 ]);
             }
