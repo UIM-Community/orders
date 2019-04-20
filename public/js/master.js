@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         mail: {
             alarm: {
                 name: "Alarm by email",
-                description: "Send an alarm by Email"
+                description: "Send an alarm by Email",
+                extends: {
+                    bcc: ["TechnologyMonitoringandCapacityPlanning@axa-im.com"]
+                }
             }
         },
         alarm: {
@@ -124,7 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const body = {
                         buTrigram: trigram.value,
                         token: btoa(token.value),
-                        timeShift: tShift.value
+                        timeShift: tShift.value,
+                        json: "[]"
                     };
 
                     const raw = await fetch(`order/${id}/condition`, {
@@ -155,6 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const fragment = document.createDocumentFragment();
         for (const condition of conditions) {
             const details = createDetails(`Condition n'${condition.condition}`);
+            if (conditions.length === 1) {
+                details.open = true;
+            }
             const clone = document.importNode(template.content, true);
 
             const line = clone.querySelector(".double_group");
@@ -219,28 +226,61 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
 
                     const submit = createButton("Create", { disabled: true });
-                    const scheduleGroup = createMaterialInput("Schedule");
-                    submit.addEventListener("click", (event) => {
+                    const scheduleGroup = createMaterialInput("Schedule", {
+                        defaultValue: "S=00h00:24h00;M=00h00:24h00;T=00h00:24h00;W=00h00:24h00;T=00h00:24h00;F=00h00:24h00;S=00h00:24h00"
+                    });
+                    submit.addEventListener("click", async(event) => {
                         event.preventDefault();
                         if (!activeTemplate) {
                             return;
                         }
 
-                        const action = actionType.options[actionType.selectedIndex].value;
+                        const type = actionType.options[actionType.selectedIndex].value;
                         const template = actionTemplate.options[actionTemplate.selectedIndex].value;
                         const schedule = scheduleGroup.childNodes[0].value;
-                        const currAt = ActionTemplate[action][template];
-                        const json = { action, schedule, arguments: { template } };
+                        const currAt = ActionTemplate[type][template];
+                        const json = { type, schedule, arguments: { template } };
                         if (typeof currAt.extends !== "undefined") {
                             json.arguments = Object.assign({}, currAt.extends, json.arguments);
                         }
 
-                        const tInputs = templateContent.querySelectorAll("input");
+                        const tInputs = templateContent.querySelectorAll(".tpl_input");
                         for (const input of tInputs) {
                             const path = input.getAttribute("data-path");
-                            setValue(json.arguments, path, input.value);
+
+                            const value = input.value.trim().normalize();
+                            if (input.classList.contains("email")) {
+                                setValue(json.arguments, path, value === "" ? [] : input.value.split(";"));
+                            }
+                            else {
+                                setValue(json.arguments, path, value);
+                            }
                         }
-                        console.log(json);
+                        condition.json.push(json);
+
+                        // TODO Send path request here!
+                        const body = {
+                            buTrigram: condition.trigram,
+                            token: condition.token,
+                            timeShift: condition.time_shift,
+                            json: condition.json
+                        };
+
+                        const raw = await fetch(`order/${condition.id}/condition`, {
+                            method: "PATCH",
+                            headers,
+                            body: JSON.stringify(body)
+                        });
+                        if (raw.status === 200) {
+                            document.getElementById("modal_close").click();
+                            window.location.reload(false);
+
+                            // TODO: find a way to re-open/refresh details
+                            // details.open = true;
+                        }
+                        else {
+                            alert(await raw.text());
+                        }
                     });
 
                     form.insertBefore(scheduleGroup, templateContent);
@@ -268,7 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const body = {
                     buTrigram: trigram.value,
                     token: btoa(token.value),
-                    timeShift: timeShift.value
+                    timeShift: timeShift.value,
+                    json: JSON.stringify(condition.json)
                 };
 
                 const raw = await fetch(`order/${condition.id}/condition`, {
@@ -300,13 +341,28 @@ document.addEventListener("DOMContentLoaded", () => {
             clone.appendChild(btnSectionTop);
 
             const _t = new DynamicTable("action_table");
-            for (const { type, schedule, arguments: args } of condition.json) {
-                _t.addRow([
+            for (let id = 0; id < condition.json.length; id++) {
+                const { type, schedule, arguments: args } = condition.json[id];
+                let currTr;
+                async function deleteClick() {
+                    const ret = confirm("Are you sure to delete this action ?");
+                    if (!ret) {
+                        return;
+                    }
+                    condition.json.splice(id, 1);
+                    btnSave.disabled = false;
+                    btnSave.click();
+
+                    const tbody = document.querySelector("tbody");
+                    tbody.removeChild(currTr);
+                }
+
+                currTr = _t.addRow([
                     type,
-                    scheduleElement(schedule),
+                    schedule === "" ? "" : scheduleElement(schedule),
                     { value: args.template, center: false },
                     { value: "✏️", center: true },
-                    { value: "❌", center: true }
+                    { value: "❌", center: true, click: deleteClick }
                 ]);
             }
             clone.appendChild(_t.close());

@@ -333,7 +333,7 @@ httpServer.patch("/order/:id/condition", async(req, res) => {
         return send(res, 400, err[0].message);
     }
 
-    const { buTrigram, token, timeShift } = req.body;
+    const { buTrigram, token, timeShift, json } = req.body;
     const id = req.params.id;
     if (isNaN(Number(id))) {
         return send(res, 400, "id must be a number");
@@ -352,6 +352,7 @@ httpServer.patch("/order/:id/condition", async(req, res) => {
         .set("bu_id", row[0])
         .set("token", token)
         .set("time_shift", timeShift)
+        .set("json", json)
         .where("id = :id")
         .bind("id", id)
         .execute();

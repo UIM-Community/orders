@@ -285,6 +285,8 @@ class DynamicTable {
             tr.style.display = "none";
         }
         this.rowFragments.appendChild(tr);
+
+        return tr;
     }
 
     /**

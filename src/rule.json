@@ -12,6 +12,7 @@
     "condition": {
         "buTrigram": "required|string|max:3",
         "token": "required|string",
-        "timeShift": "required|string"
+        "timeShift": "required|string",
+        "json": "required"
     }
 }
