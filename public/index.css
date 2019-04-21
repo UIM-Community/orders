@@ -172,6 +172,7 @@ section.form_group {
         width: auto !important;
         margin-top: 10px;
         background: transparent;
+        color: #37474F;
     }
         section.form_group > input:focus {
             border-color: #283593;
@@ -242,9 +243,10 @@ button {
     transition: 0.2s linear;
     font-family: Roboto;
     font-weight: bold;
+    border-radius: 2px;
 }
     button.del {
-        background: #E53935 !important;
+        background: #E53935;
     }
         button.del:hover {
             cursor: pointer;
@@ -348,8 +350,13 @@ input[type="submit"] {
     height: 43px;
     transition: 0.2s linear;
     font-family: Roboto;
+    border-radius: 2px;
 }
-    input[type="submit"]:hover {
+    input[type="submit"]:disabled {
+        background: #CCC;
+        color: #FFF;
+    }
+    input[type="submit"]:not(:disabled):hover {
         cursor: pointer;
         background: #1A237E;
     }
@@ -396,18 +403,19 @@ section#action_form_content {
     }
 
 details {
-    border: 1px solid #607D8B;
+    border: 2px solid #607D8B;
     padding: 8px;
-    border-radius: 2px;
+    border-radius: 4px;
     position: relative;
     min-height: 10px;
 }
 details + details {
-    margin-top: 15px;
+    margin-top: 25px;
 }
 summary {
     background: rgb(248, 250, 251);
     outline: none;
+    color: #607D8B;
     user-select: none;
     padding: 0 10px;
     height: 20px;

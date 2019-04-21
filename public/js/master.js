@@ -159,9 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const fragment = document.createDocumentFragment();
         for (const condition of conditions) {
             const details = createDetails(`Condition n'${condition.condition}`);
-            if (conditions.length === 1) {
-                details.open = true;
-            }
+            details.open = true;
             const clone = document.importNode(template.content, true);
 
             const line = clone.querySelector(".double_group");
@@ -179,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btnSectionTop.classList.add("btn_section");
 
             const btnAddAction = createButton("Add Action", { icon: "+" });
-            btnAddAction.style.height = "35px";
             btnAddAction.addEventListener("click", () => {
                 openModal("action_create", (clone) => {
                     const form = clone.querySelector("form");
@@ -288,7 +285,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     form.appendChild(submit);
                 });
             });
-            btnSectionTop.appendChild(btnAddAction);
 
             const btnSection = document.createElement("section");
             btnSection.classList.add("btn_section");
@@ -296,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const btnSave = createButton("Save", { disabled: true });
             const inputs = [trigramGroup.childNodes[0], tokenGroup.childNodes[0], timeGroup.childNodes[0]];
             for (const input of inputs) {
-                input.addEventListener("keypress", () => {
+                input.addEventListener("keydown", () => {
                     if (btnSave.disabled) {
                         btnSave.disabled = false;
                     }
@@ -362,6 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // update here!
                         const templateContent = clone.getElementById("action_template_content");
                         const inputSchedule = clone.getElementById("input_schedule");
+                        const btnSubmit = clone.getElementById("submit_update");
                         inputSchedule.value = schedule;
 
                         const template = await fetch(`template/${type}/${args.template}`).then((res) => res.text());
@@ -372,11 +369,53 @@ document.addEventListener("DOMContentLoaded", () => {
                             try {
                                 const path = input.getAttribute("data-path");
                                 input.value = getValue(condition.json[id].arguments, path);
+                                input.addEventListener("keydown", () => {
+                                    if (btnSubmit.disabled) {
+                                        btnSubmit.disabled = false;
+                                    }
+                                });
                             }
                             catch (err) {
                                 alert(err.message);
                             }
                         }
+
+                        btnSubmit.addEventListener("click", async(event) => {
+                            event.preventDefault();
+
+                            for (const input of inputs) {
+                                const path = input.getAttribute("data-path");
+
+                                const value = input.value.trim().normalize();
+                                if (input.classList.contains("email")) {
+                                    setValue(condition.json[id].arguments, path, value === "" ? [] : input.value.split(";"));
+                                }
+                                else {
+                                    setValue(condition.json[id].arguments, path, value);
+                                }
+                            }
+
+                            const body = {
+                                buTrigram: condition.trigram,
+                                token: condition.token,
+                                timeShift: condition.time_shift,
+                                json: JSON.stringify(condition.json)
+                            };
+
+                            const raw = await fetch(`order/${condition.id}/condition`, {
+                                method: "PATCH",
+                                headers,
+                                body: JSON.stringify(body)
+                            });
+
+                            if (raw.status === 200) {
+                                document.getElementById("modal_close").click();
+                                window.location.reload(false);
+                            }
+                            else {
+                                alert(await raw.text());
+                            }
+                        });
                     });
                 }
 
@@ -389,8 +428,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 ]);
             }
             clone.appendChild(_t.close());
-            clone.appendChild(document.createElement("hr"));
+            clone.appendChild(document.createElement("br"));
             btnSection.appendChild(btnSave);
+            btnSection.appendChild(btnAddAction);
             btnSection.appendChild(btnDelete);
             clone.appendChild(btnSection);
 
@@ -596,7 +636,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const initialState = orderActive.options[orderActive.selectedIndex].value === "true";
                     const inputsTemp = clone.querySelectorAll("input.modal_input");
                     for (const input of inputsTemp) {
-                        input.addEventListener("keypress", () => {
+                        input.addEventListener("keydown", () => {
                             if (btnSave.disabled) {
                                 btnSave.disabled = false;
                             }
