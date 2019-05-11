@@ -44,6 +44,9 @@ Then create a SSL directory that will contain your **key** and **cert** file:
 - key.pem
 - cert.pem
 
+### CMDB SQL Tables
+Find an export (dump) of the project SQL Tables in `data/cmdb.sql`
+
 ## Endpoints
 
 ### /view
