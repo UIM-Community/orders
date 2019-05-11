@@ -1,16 +1,46 @@
 // Require Third-party Dependencies
 require("dotenv").config();
 
+// Require Node.js Dependencies
+const { readFileSync, mkdirSync } = require("fs");
+const { join } = require("path");
+const { createServer } = require("https");
+
 // Require Internal Dependencies
 const httpServer = require("./src/httpServer");
 const getSession = require("./src/session");
 const { qWrap } = require("./src/utils");
 
-// Globals
-const PORT = process.env.port || 1337;
+// CONSTANTS
+const SSL_DIR = join(process.cwd(), "ssl");
+const PORT = process.env.api_http_port || 1337;
+const ACTIVE_SSL = process.env.api_http_ssl === "true";
+console.log(ACTIVE_SSL);
+
+function httpStarted() {
+    const kw = ACTIVE_SSL ? "https" : "http";
+    console.log(`${kw} server started at: ${`${kw}://localhost:${PORT}`}`);
+}
 
 async function main() {
-    httpServer.listen(PORT, () => console.log(`HTTP Server started at: ${`http://localhost:${PORT}`}`));
+    if (ACTIVE_SSL) {
+        try {
+            mkdirSync(SSL_DIR);
+        }
+        catch (err) {
+            // Skip
+        }
+
+        const options = {
+            key: readFileSync(join(SSL_DIR, "key.pem")),
+            cert: readFileSync(join(SSL_DIR, "cert.pem"))
+        };
+
+        createServer(options, httpServer.handler).listen(httpStarted);
+    }
+    else {
+        httpServer.listen(PORT, httpStarted);
+    }
 
     const sess = await getSession();
     const tOrders = sess.getTable("cmdb_order");
