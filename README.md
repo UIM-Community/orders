@@ -30,6 +30,13 @@ db_password="NimSoft!01"
 db_database=ca_uim_cmdb
 ```
 
+Then just start the project with the following command:
+```bash
+$ npm start
+# or without npm
+$ node index.js
+```
+
 ### SSL Configuration
 To enable SSL, enable the configuration key `api_http_ssl` to **true** (in the .env file).
 
