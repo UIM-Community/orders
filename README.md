@@ -5,6 +5,7 @@ AXA IM - Orders manager.
 
 - Node.js version 10 or higher
 - [MySQL v8](https://www.mysql.com/fr/) database.
+- MySQL V8 connector
 
 ## Getting Started
 
