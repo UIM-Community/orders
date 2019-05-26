@@ -374,6 +374,7 @@ fieldset {
 
 section#action_bar {
     display: flex;
+    justify-content: space-between;
 }
     section#action_bar > p.action_title {
         background: #607D8B;
@@ -383,9 +384,12 @@ section#action_bar {
         display: flex;
         align-items: center;
     }
-    section#action_bar > button {
-        margin-left: auto;
+    section#action_bar > div {
+        display: flex;
     }
+        section#action_bar > div button + button {
+            margin-left: 10px;
+        }
 
 section#action_groups {
     display: flex;

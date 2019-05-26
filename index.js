@@ -15,7 +15,6 @@ const { qWrap } = require("./src/utils");
 const SSL_DIR = join(process.cwd(), "ssl");
 const PORT = process.env.api_http_port || 1337;
 const ACTIVE_SSL = process.env.api_http_ssl === "true";
-console.log(ACTIVE_SSL);
 
 function httpStarted() {
     const kw = ACTIVE_SSL ? "https" : "http";

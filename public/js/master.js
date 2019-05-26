@@ -149,6 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        let isCollapsed = true;
+        const btnCollapsed = document.getElementById("btn_collapse");
+        btnCollapsed.addEventListener("click", () => {
+            btnCollapsed.innerHTML = isCollapsed ? "Deploy All" : "Collapse All";
+            const details = document.getElementsByTagName("details");
+            isCollapsed = !isCollapsed;
+            for (const detail of details) {
+                detail.open = isCollapsed;
+            }
+        });
+
         const title = document.querySelector(".action_title");
         title.textContent = `Order Number: ${number}`;
 
@@ -166,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const trigramGroup = createMaterialInput("Application Trigram");
             const tokenGroup = createMaterialInput("Regex ( Token )");
             const timeGroup = createMaterialInput("Time Shift");
+            const correlationGroup = createMaterialInput("Correlation ID");
 
             trigramGroup.childNodes[0].value = condition.trigram;
             tokenGroup.childNodes[0].value = atob(condition.token);
@@ -421,8 +433,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 currTr = _t.addRow([
                     type,
+                    { value: args.template, center: true },
                     schedule === "" ? "" : scheduleElement(schedule),
-                    { value: args.template, center: false },
                     { value: "✏️", center: true, click: editClick },
                     { value: "❌", center: true, click: deleteClick }
                 ]);
