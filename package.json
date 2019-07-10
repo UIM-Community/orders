@@ -1,7 +1,7 @@
 {
   "name": "orders",
   "version": "1.0.0",
-  "description": "N/A",
+  "description": "AXA IM Orders Manager",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
