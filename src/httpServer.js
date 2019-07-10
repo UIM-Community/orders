@@ -1,5 +1,3 @@
-require("make-promises-safe");
-
 // Require Node.js Dependencies
 const { readFileSync, readFile, access } = require("fs");
 const { promisify } = require("util");

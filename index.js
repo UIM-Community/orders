@@ -1,4 +1,4 @@
-// Require Third-party Dependencies
+require("make-promises-safe");
 require("dotenv").config();
 
 // Require Node.js Dependencies

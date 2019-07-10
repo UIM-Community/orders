@@ -1,4 +1,3 @@
-// Require Third-party Dependencies
 require("dotenv").config();
 
 // Require Third-party Dependencies
